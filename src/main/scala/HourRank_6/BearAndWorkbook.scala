@@ -1,3 +1,5 @@
+import utils.SetInt
+
 object BearAndWorkbook {
   def readSeqInt() = io.StdIn.readLine().split(" ").toList.map(_.toInt)
 
