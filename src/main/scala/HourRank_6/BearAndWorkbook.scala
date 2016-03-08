@@ -19,7 +19,7 @@ object BearAndWorkbook {
       }
       toPage(1 to problemNum)
     })
-  //  println(pages.indices map (_ + 1) zip pages)
+    //  println(pages.indices map (_ + 1) zip pages)
 
     println(pages.indices map (_ + 1) zip pages count {
       case (index, page) =>

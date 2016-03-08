@@ -1,7 +1,5 @@
-val m=Seq(
-  Seq(1, 2, 3, 4),
-  Seq(1, 2, 3, 5)
-)
-
-m.head.indexOfSlice(Seq(4,5))
-
+val left = List(1).map(Option.apply)
+val right = List(1, 2).map(Option.apply)
+val body = List(List(0), List(9),List(8)).map(Option.apply)
+val a: List[((Option[List[Int]], Option[Int]), Option[Int])] =
+body zipAll (left, None, None) zipAll (right,(None,None),None )
