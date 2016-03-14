@@ -39,7 +39,6 @@ object MatrixRotation {
       val right = matrix.drop(1).dropRight(1).map(_.last)
       val left = matrix.drop(1).dropRight(1).map(_.head).reverse
       head ++ right ++ last ++ left
-
     }
   }
 

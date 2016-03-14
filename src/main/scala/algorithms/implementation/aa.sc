@@ -1,3 +1,4 @@
-val l = 1 to 10
+import java.util.Random
 
-l.
+new Random(1).nextDouble()
+new Random(1).nextDouble()
