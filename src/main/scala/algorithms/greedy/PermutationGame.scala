@@ -1,4 +1,4 @@
-package challenges
+package algorithms.greedy
 
 import utils.SetInt
 

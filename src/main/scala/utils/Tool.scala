@@ -14,4 +14,9 @@ object Tool {
     else
       listIsSort(l.tail, l.head)
   }
+
+  def bool2YesNo(boolean: Boolean) = boolean match {
+    case true => "YES"
+    case false => "NO"
+  }
 }
