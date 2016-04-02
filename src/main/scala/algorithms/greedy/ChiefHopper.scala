@@ -1,6 +1,4 @@
-package challenges
-
-import scala.util.Random
+package algorithms.greedy
 
 import utils.SetInt
 

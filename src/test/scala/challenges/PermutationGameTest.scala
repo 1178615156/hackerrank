@@ -1,5 +1,6 @@
 package challenges
 
+import algorithms.greedy.PermutationGame
 import org.scalatest.FunSuite
 
 /**

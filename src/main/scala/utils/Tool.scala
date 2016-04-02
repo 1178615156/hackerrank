@@ -17,6 +17,11 @@ object Tool {
       listIsSort(l.tail, l.head)
   }
 
+  def bool2YesNo(boolean: Boolean) = boolean match {
+    case true => "YES"
+    case false => "NO"
+  }
+
   type Grid[X] = Seq[Array[X]]
   def readGrid[R](lineNum: Int): Grid[Char] = readGrid(lineNum,_.toArray)
 
