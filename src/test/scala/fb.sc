@@ -1,3 +1,2 @@
-val a =1
-a % 2
-a % 0
+None.isEmpty
+None.isDefined

@@ -54,7 +54,44 @@ class PacManDFSTest extends FunSuite {
 
   test("paintGridAround") {
     val paint: Paint[Char] = Paint(1, 1)
-    assert(paintGridAround(paint, grid) == "%%--".toList.reverse)
+    assert(paintGridAround(paint, grid).map(_.value.get) == "%%--".toList.reverse)
+  }
+
+  test("mkTree") {
+    val begin: Paint[Char] = Paint(pacMain_column, pacMan_row)
+    val end: Paint[Char] = Paint(food_column, food_row)
+    val result = (mkTree(begin, end, grid))
+    println(result)
+  }
+
+  test("mk tree test") {
+    val begin: Paint[Char] = Paint(column = 1, row = 1)
+    val end: Paint[Char] = Paint(column = 1, row = 3)
+    val result = (mkTree(begin, end, grid))
+
+    assert(result.value.forall(e => e.row == 1 && e.column == 1))
+
+    assert(result.child.head.value.forall(e => e.row == 2 && e.column == 1))
+
+    assert(result.child.head.child.head.value.forall(e => e.row == 3 && e.column == 1))
+    println(result)
+  }
+
+  test("mk tree test 3,14 -> 2,17"){
+    val begin: Paint[Char] = Paint(row = 3, column = 14)
+    val end: Paint[Char] = Paint(row = 2, column = 17)
+    val result = (mkTree(begin, end, grid))
+    println(result)
+  }
+
+  test("dfs") {
+    val begin: Paint[Char] = Paint(1, 1)
+    val end: Paint[Char] = Paint(3, 1)
+    val tree = (mkTree(begin, end, grid))
+
+    val dfsPath = dfs(Seq(tree), end)
+
+    println(dfsPath)
   }
 }
 

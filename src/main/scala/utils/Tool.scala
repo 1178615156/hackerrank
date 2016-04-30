@@ -29,8 +29,8 @@ object Tool {
     1 to lineNum map (_ => s(io.StdIn.readLine()))
   }
   scala.annotation.elidable
-  case class Paint[T](xx:Int,yy:Int ,value:Option[T] = None ){
-    def row = yy
-    def column = xx
+  case class Paint[T](row:Int ,column:Int,value:Option[T] = None ){
   }
+  type PaintChar = Paint[Char]
+
 }

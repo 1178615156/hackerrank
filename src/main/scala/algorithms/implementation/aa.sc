@@ -1,4 +1,1 @@
-import java.util.Random
-
-new Random(1).nextDouble()
-new Random(1).nextDouble()
+List(1,2,3,4).grouped(3).mkString("\n")
