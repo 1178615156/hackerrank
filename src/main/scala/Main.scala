@@ -3,11 +3,9 @@
   */
 
 
-object Main {
-  def main(args: Array[String]) {
-    val a = 1
-    if (System.currentTimeMillis() > a)
-      println("hello world")
+class A {
+  private val a = 1
+  private val b = 2
 
-  }
+  private def c = 3
 }

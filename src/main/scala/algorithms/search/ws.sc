@@ -1,2 +1,4 @@
-val l = List(1,2,3,3)
-l.indices map l.splitAt
+val l = List(1, 2, 3)
+
+
+mkSubArray(l,Nil).mkString(" ")

@@ -1,1 +1,1 @@
-List(1,2,3,4).grouped(3).mkString("\n")
+Set(1,2,3) &~ Set(1)
