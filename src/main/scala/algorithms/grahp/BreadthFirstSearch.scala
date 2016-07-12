@@ -16,9 +16,8 @@ import scala.io.Source
 //  }
 //  Some(Future(1)).sequence
 //  List(Future(1)).sequence
-/**
-  * Created by yuJieShui on 2016/5/16.
-  */
+
+
 object BreadthFirstSearch {
 
   type Node = Int
@@ -33,10 +32,10 @@ object BreadthFirstSearch {
 
   def bfs(openList: Seq[Edge], closeList: Seq[Layer]): Seq[Layer] = {
     lazy val clientLayer: Layer = closeList.last.flatMap(current => {
-        val clientEdge = openList.filter(_.containNode(current))
-        val clientNode = clientEdge.map(e => if (e.end == current) Edge(e.end, e.begin) else e).map(_.end)
-        clientNode
-      }).distinct.filterNot(node => closeList.exists(_.contains(node)))
+      val clientEdge = openList.filter(_.containNode(current))
+      val clientNode = clientEdge.map(e => if (e.end == current) Edge(e.end, e.begin) else e).map(_.end)
+      clientNode
+    }).distinct.filterNot(node => closeList.exists(_.contains(node)))
 
     if (openList.isEmpty || clientLayer.isEmpty)
       closeList
@@ -90,6 +89,10 @@ object BreadthFirstSearch {
   )
   //  6 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12
   //  6 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12 6 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+  def a[T:Numeric](n: T) = {implicitly[Numeric[T]].toInt(n)}
+  class Hello
+  implicit val x : Numeric[Hello] = ???
+  a(new Hello)
 }
 
 
