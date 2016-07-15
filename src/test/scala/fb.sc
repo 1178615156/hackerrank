@@ -1,1 +1,1 @@
-BigInt("9876967415056854651").toLong
+List(1,2,3,4).tails.toList

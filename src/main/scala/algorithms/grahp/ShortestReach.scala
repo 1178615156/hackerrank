@@ -1,12 +1,10 @@
 package algorithms.grahp
 
 import java.io.File
-import org.scalameter.api._
 import utils.SetInt
 
 import scala.collection.immutable.IndexedSeq
 import scala.io.Source
-import org.scalameter.api._
 
 /**
   * Created by yuJieShui on 2016/5/18.
