@@ -5,8 +5,7 @@ import utils.SetInt
 /**
   * Created by yujieshui on 2016/7/15.
   */
-object JourneyToTheMoon {
-
+object GraphEntity {
   type Distances = Int
 
   type Node[T] = T
@@ -26,6 +25,12 @@ object JourneyToTheMoon {
 
     def aroundNode(node: Node[T]): Set[Node[T]] = cacheNode.get(node).getOrElse(Set())
   }
+
+}
+
+object JourneyToTheMoon {
+
+  import GraphEntity._
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,9 +64,9 @@ object JourneyToTheMoon {
   }
 
   def combination(l: Seq[Country[Astronaut]]): Long = {
-    def c2(total: Int) : Long= if (total < 2) 0 else total.toLong * (total.toLong - 1) / 2
+    def c2(total: Int): Long = if (total < 2) 0 else total.toLong * (total.toLong - 1) / 2
 
-    def impl2Optimize(l: Seq[Int], sum: Int) : Long = c2(sum) - l.map(c2).sum
+    def impl2Optimize(l: Seq[Int], sum: Int): Long = c2(sum) - l.map(c2).sum
 
     impl2Optimize(l.map(_.size), l.map(_.size).sum)
   }
