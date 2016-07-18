@@ -39,16 +39,16 @@ object Expressions {
   }
 
   def parser(s: String): Expression = {
-    s.head match {
-      case e if isNumber(e)=> val (number , other)  = takeNumber(s)
-        val singleExpression = SingleTerm(NumberFactor(number))
-        other.head match {
-          case '+' => AddExpression(singleExpression,parser(other.tail))
-          case '-' => SubtractionExpression(singleExpression,parser(other.tail))
-          case '*' => MultiplicationTerm(NumberFactor(number),parser(other.tail))
-          case '/' =>
-        }
-    }
+//    s.head match {
+//      case e if isNumber(e)=> val (number , other)  = takeNumber(s)
+//        val singleExpression = SingleTerm(NumberFactor(number))
+//        other.head match {
+//          case '+' => AddExpression(singleExpression,parser(other.tail))
+//          case '-' => SubtractionExpression(singleExpression,parser(other.tail))
+//          case '*' => MultiplicationTerm(NumberFactor(number),parser(other.tail))
+//          case '/' =>
+//        }
+//    }
 
 
     ???
