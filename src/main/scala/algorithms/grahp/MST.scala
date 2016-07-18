@@ -39,7 +39,7 @@ object MST {
       nextNodeResult.foldLeft(rt ++ nextNodeResult.map(e => e.node -> e).toMap) {
         case (acc, Result(node, minWight, totalWight,edge)) =>
           val r =
-            mst(graph, node, totalWight, acc, nod e +: closeList,nextNodeResult.map(_.edge) ++ closeEdgeList)
+            mst(graph, node, totalWight, acc, node +: closeList,nextNodeResult.map(_.edge) ++ closeEdgeList)
           println(r.toSeq.sortBy(_._1).mkString("\n"))
           println("----------------------------------")
           r
