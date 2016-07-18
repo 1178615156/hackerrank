@@ -10,7 +10,9 @@ object GraphEntity {
 
   type Layer[T] = Seq[Node[T]]
 
-  case class Edge[T](begin: Node[T], end: Node[T])
+  type Weight = Int
+
+  case class Edge[T](begin: Node[T], end: Node[T], weight: Int = 0)
 
   case class NodeDistances[T](node: Node[T], distances: Distances)
 

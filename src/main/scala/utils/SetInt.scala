@@ -11,4 +11,17 @@ object SetInt {
       s.getBytes
     ))
   }
+
+  case class VarTime(var time: Long = 0) {
+    def set(f: Long => Long) = time = f(time)
+  }
+
+  def computeTime[T](t: => T)(implicit varTime: VarTime) = {
+    val startTime = System.currentTimeMillis()
+    val result = t
+    val endTime = System.currentTimeMillis()
+
+    varTime.set(_ + (endTime - startTime))
+    result
+  }
 }

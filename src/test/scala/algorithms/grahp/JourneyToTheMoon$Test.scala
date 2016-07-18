@@ -10,7 +10,7 @@ import scala.util.Random
   * Created by yujieshui on 2016/7/15.
   */
 class JourneyToTheMoon$Test extends FunSuite {
-
+import GraphEntity._
   import JourneyToTheMoon._
 
   val testData_1 = new {
