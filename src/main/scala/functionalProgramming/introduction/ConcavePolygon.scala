@@ -2,12 +2,13 @@ package functionalProgramming.introduction
 
 import utils.SetInt
 
-import scala.math.Pi
 
 /**
   * Created by yujieshui on 2016/7/18.
   */
 object ConcavePolygon {
+
+  import scala.math.Pi
 
   case class Paint(x: Double, y: Double) {
     def *(paint: Paint) = Paint(this.x * paint.x, this.y * paint.y)
@@ -16,45 +17,20 @@ object ConcavePolygon {
 
     def +(paint: Paint) = Paint(this.x + paint.x, this.y + paint.y)
 
-    lazy val angle  = {
-      if (x >= 0 && y == 0) 0
-      else if (x == 0 && y > 0) Pi / 2
-      else if (x < 0 && y == 0) Pi
-      else if (x == 0 && y < 0) Pi + Pi / 2
-      else (math.atan2(y,x) + (2* Pi)) % (2 * Pi)
-//
-//      else if (x > 0 && y > 0) math.atan2(x, y)
-//      else if (x < 0 && y > 0) Pi / 2 + math.atan2(-x, y)
-//      else if (x < 0 && y < 0) Pi + math.atan2(-x, -y)
-//      else if (x > 0 && y < 0) Pi + Pi / 2 + math.atan2(x, -y)
-//      else ???
-    }
+    lazy val angle  = (math.atan2(y, x) + (2 * Pi)) % (2 * Pi)
     lazy val length = math.sqrt(x * x + y * y)
 
     override def toString: String = {s"""x=$x,y=$y,angle=$angle,length=$length"""}
   }
 
-  type Paints = Seq[Paint]
+  type Paints = List[Paint]
 
-  case class Line(head: Paint, tail: Paint)
+  case class Line(start: Paint, end: Paint)
 
-  case class Angle(left: Paint, mid: Paint, right: Paint) {
-    val isLeft = {
-      val a = left
-      val b = right
-      val p = mid
-      (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x) > 0
-    }
-
-    def isRight = !isLeft
-
-    val angle = {
-      val a = (left - mid)
-      val b = (right - mid)
-      math.max(a.angle, b.angle) - math.min(a.angle, b.angle)
-    }
-
-    override def toString: String = s"""angle=$angle"""
+  case class PaintDirection(start: Paint, test: Paint, end: Paint) {
+    val isLeft  = (end.x - start.x) * (test.y - start.y) - (end.y - start.y) * (test.x - start.x) > 0
+    val isRight = !isLeft
+    val angle   = math.max((start - test).angle, (end - test).angle) - math.min((start - test).angle, (end - test).angle)
   }
 
   def centerPaintOf(paints: Paints) = {
@@ -62,28 +38,20 @@ object ConcavePolygon {
     Paint(r.x / paints.size, r.y / paints.size)
   }
 
-  def paintsToAngle(paints: Paints) = {
-    def impl(paints: Paints, rt: Seq[Angle]): Seq[Angle] = {
-      if (paints.size < 3)
-        rt
-      else {
-        val Seq(left, mid, right) = paints.take(3)
-        impl(paints.tail, Angle(left, mid, right) +: rt)
-      }
+  def paintsToPaintDirection(paints: Paints) = {
+    def impl(paints: Paints, rt: Seq[PaintDirection]): Seq[PaintDirection] = paints match {
+      case start :: test :: end :: other => impl(paints.tail, PaintDirection(start, test, end) +: rt)
+      case other                         => rt
     }
-    val new_paints = paints ++ paints.take(2)
-    impl(new_paints, Nil)
+    impl(paints ++ paints.take(2), Nil)
   }
 
   def solution(paints: Paints): Boolean = {
     val centerPaint = centerPaintOf(paints)
-    val new_paints = (paints map (_ - centerPaint) sortWith ((l, r) => {
-      if (l.angle < r.angle) true
-      else if (l.angle == r.angle && l.length < r.length) true
-      else false
-    }))
-    val angles = paintsToAngle(new_paints.toSeq)
-    angles.exists(_.isLeft)
+    val new_paints = paints map (_ - centerPaint) sortWith ((l, r) =>
+      (l.angle < r.angle) || (l.angle == r.angle && l.length < r.length)
+      )
+    paintsToPaintDirection(new_paints).exists(_.isLeft)
   }
 
 
@@ -94,8 +62,8 @@ object ConcavePolygon {
       val x :: y :: Nil = readListInt()
       Paint(x, y)
     })
-    println(solution(in) match {
-      case true => "YES"
+    println(solution(in.toList) match {
+      case true  => "YES"
       case false => "NO"
     })
   }

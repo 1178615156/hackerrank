@@ -28,22 +28,22 @@ class ConcavePolygon$Test extends FunSuite {
     assert(Paint(1, -1).angle   ~= Pi + Pi / 2 + Pi / 4)
   }
   test("angle 1") {
-    val angle = Angle(Paint(-1, 0), Paint(0, 0), Paint(1, 0))
+    val angle = PaintDirection(Paint(-1, 0), Paint(0, 0), Paint(1, 0))
     assert(angle.angle === Pi)
 
   }
   test("angle 2") {
-    val angle = Angle(Paint(0, 1), Paint(0, 0), Paint(1, 0))
+    val angle = PaintDirection(Paint(0, 1), Paint(0, 0), Paint(1, 0))
     assert(angle.angle === (Pi / 2))
   }
   test("angle 3") {
-    val angle = Angle(Paint(1, 2), Paint(1, 1), Paint(2, 1))
+    val angle = PaintDirection(Paint(1, 2), Paint(1, 1), Paint(2, 1))
     assert(angle.angle === (Pi / 2))
   }
   test("angle 4") {
-    assert(Angle(Paint(-1, -1), Paint(0, 0), Paint(1, 1)).angle === (Pi))
-    assert(Angle(Paint(-1, -1), Paint(0, 0), Paint(1, 0)).angle === (Pi + Pi / 4))
-    assert(Angle(Paint(-1, -1), Paint(0, 0), Paint(1, -1)).angle === (Pi / 2))
+    assert(PaintDirection(Paint(-1, -1), Paint(0, 0), Paint(1, 1)).angle === (Pi))
+    assert(PaintDirection(Paint(-1, -1), Paint(0, 0), Paint(1, 0)).angle === (Pi + Pi / 4))
+    assert(PaintDirection(Paint(-1, -1), Paint(0, 0), Paint(1, -1)).angle === (Pi / 2))
   }
 
 
@@ -51,7 +51,7 @@ class ConcavePolygon$Test extends FunSuite {
   test("solution 1") {
     assert(
       solution(
-        Seq(
+        List(
           Paint(622, 991),
           Paint(1054, 665),
           Paint(661, 485)
@@ -65,7 +65,7 @@ class ConcavePolygon$Test extends FunSuite {
   test("solution 2") {
     assert(
       solution(
-        Seq(
+        List(
           Paint(0, 0),
           Paint(0, 1),
           Paint(1, 1),
@@ -77,7 +77,7 @@ class ConcavePolygon$Test extends FunSuite {
 
   test("solution 3") {
     assert(
-      solution(Seq(
+      solution(List(
         Paint(1028, 625),
         Paint(1042, 943),
         Paint(793, 1042),
