@@ -1,4 +1,4 @@
-package functionalProgramming.introduction
+package functionalProgramming.recursion
 
 import utils.SetInt
 
@@ -30,7 +30,6 @@ object ConcavePolygon {
   case class PaintDirection(start: Paint, test: Paint, end: Paint) {
     val isLeft  = (end.x - start.x) * (test.y - start.y) - (end.y - start.y) * (test.x - start.x) > 0
     val isRight = !isLeft
-    val angle   = math.max((start - test).angle, (end - test).angle) - math.min((start - test).angle, (end - test).angle)
   }
 
   def centerPaintOf(paints: Paints) = {
@@ -53,7 +52,6 @@ object ConcavePolygon {
       )
     paintsToPaintDirection(new_paints).exists(_.isLeft)
   }
-
 
   def main(args: Array[String]) {
     def readListInt() = io.StdIn.readLine().split(" ").toList.map(_.toInt)

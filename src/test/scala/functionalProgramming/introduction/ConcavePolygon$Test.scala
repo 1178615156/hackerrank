@@ -9,7 +9,7 @@ import scala.math.Pi
   */
 class ConcavePolygon$Test extends FunSuite {
 
-  import ConcavePolygon._
+  import functionalProgramming.recursion.ConcavePolygon._
 
   implicit class `With~=`(val double: Double) {
     def ~=(double: Double) =
@@ -27,26 +27,6 @@ class ConcavePolygon$Test extends FunSuite {
     assert(Paint(0, -1).angle   ~= Pi + Pi / 2)
     assert(Paint(1, -1).angle   ~= Pi + Pi / 2 + Pi / 4)
   }
-  test("angle 1") {
-    val angle = PaintDirection(Paint(-1, 0), Paint(0, 0), Paint(1, 0))
-    assert(angle.angle === Pi)
-
-  }
-  test("angle 2") {
-    val angle = PaintDirection(Paint(0, 1), Paint(0, 0), Paint(1, 0))
-    assert(angle.angle === (Pi / 2))
-  }
-  test("angle 3") {
-    val angle = PaintDirection(Paint(1, 2), Paint(1, 1), Paint(2, 1))
-    assert(angle.angle === (Pi / 2))
-  }
-  test("angle 4") {
-    assert(PaintDirection(Paint(-1, -1), Paint(0, 0), Paint(1, 1)).angle === (Pi))
-    assert(PaintDirection(Paint(-1, -1), Paint(0, 0), Paint(1, 0)).angle === (Pi + Pi / 4))
-    assert(PaintDirection(Paint(-1, -1), Paint(0, 0), Paint(1, -1)).angle === (Pi / 2))
-  }
-
-
 
   test("solution 1") {
     assert(
