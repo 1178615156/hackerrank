@@ -127,6 +127,7 @@ class MSTTest extends FunSuite {
     assert(solution(graph, 3) === 3)
   }
 
+
   test("test 8") {
     val graph = Graph(
       Seq(
