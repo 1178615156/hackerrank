@@ -11,7 +11,7 @@ object ConvexHull extends App {
 
   case class Triangle(a: Point, b: Point, c: Point)
 
-  val sc    = new java.util.Scanner(System.in);
+  val sc    = new java.util.Scanner(System.in)
   val n     = sc.nextInt()
   val datas = 1 to n map (_ ⇒
     Point(sc.nextInt(), sc.nextInt())

@@ -21,8 +21,8 @@ object SavePrincess {
   case class Point(yy: Int, xx: Int)
 
   def main(args: Array[String]) = {
-    val sc = new java.util.Scanner(System.in);
-    val m = sc.nextInt();
+    val sc = new java.util.Scanner(System.in)
+    val m = sc.nextInt()
     sc.nextLine()
     val grid = new Array[String](m)
     for (i <- 0 until m) {

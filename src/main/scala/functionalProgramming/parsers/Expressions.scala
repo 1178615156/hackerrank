@@ -35,7 +35,7 @@ object Expressions {
     def impl(s: String): String =
       if (isNumber(s.head)) s.head.toString + takeNumber(s.tail) else ""
 
-    impl(s).toInt -> impl(s.drop(s.size))
+    impl(s).toInt -> impl(s.drop(s.length))
   }
 
   def parser(s: String): Expression = {

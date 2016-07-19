@@ -12,7 +12,7 @@ object Pangrams {
     "We promptly judged antique ivory buckles for the next prize    ")
 
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
+    val sc = new java.util.Scanner(System.in)
     val txt = sc.nextLine().toLowerCase.toCharArray
     val isPangrams = ('a' to 'z').forall(r => {
       txt.contains(r)
@@ -34,7 +34,7 @@ object FunnyString {
     """.stripMargin)
 
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
+    val sc = new java.util.Scanner(System.in)
     val n = sc.nextInt()
     sc.nextLine()
     val texts = 1 to n map (_ ⇒ sc.nextLine())
@@ -78,7 +78,7 @@ object AlternationCharacters {
   }
 
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
+    val sc = new java.util.Scanner(System.in)
     val n = sc.nextInt()
     sc.nextLine()
     val texts = 1 to n map (_ ⇒ sc.nextLine())

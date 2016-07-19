@@ -10,7 +10,7 @@ object Encryption {
   }
 
   def countSize(s: String): Size = {
-    val l = s.size
+    val l = s.length
     val floor = math.floor(math.sqrt(l)).toInt
     val ceil = math.ceil(math.sqrt(l)).toInt
     val allSize =
@@ -23,7 +23,7 @@ object Encryption {
 
   def encryption(s: String): String = {
     val size@Size(rows, column) = countSize(s)
-    (s.toList ++ " " * (size.area - s.size))
+    (s.toList ++ " " * (size.area - s.length))
       .grouped(column).toList.transpose.map(_.mkString("").trim).mkString(" ")
   }
 

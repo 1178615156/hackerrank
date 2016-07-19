@@ -26,6 +26,7 @@ object PascalTriangle {
   }
 }
 
+//noinspection ScalaDeprecation
 object SierpinskiTriangle {
   type Triangle = Seq[String]
 

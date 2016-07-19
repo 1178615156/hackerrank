@@ -3,7 +3,7 @@
   */
 
 
-class A {
+class Main {
   private val a = 1
   private val b = 2
 

@@ -9,22 +9,22 @@ import utils.SetInt
   */
 object ArraySum {
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
-    var n = sc.nextInt();
-    var arr = new Array[Int](n);
+    val sc = new java.util.Scanner(System.in)
+    var n = sc.nextInt()
+    var arr = new Array[Int](n)
     for (arr_i <- 0 to n - 1) {
-      arr(arr_i) = sc.nextInt();
+      arr(arr_i) = sc.nextInt()
     }
     println(arr.sum)
   }
 }
 
 object BigIntSum {
-  val sc  = new java.util.Scanner(System.in);
-  val n   = sc.nextInt();
-  val arr = new Array[Int](n);
+  val sc  = new java.util.Scanner(System.in)
+  val n   = sc.nextInt()
+  val arr = new Array[Int](n)
   for (arr_i <- 0 to n - 1) {
-    arr(arr_i) = sc.nextInt();
+    arr(arr_i) = sc.nextInt()
   }
   val out = arr.foldLeft(0l)(_ + _)
   println(out)
@@ -35,11 +35,11 @@ object BigIntSum {
 object PlusMinus {
 
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
-    val n = sc.nextInt();
-    val arr = new Array[Int](n);
+    val sc = new java.util.Scanner(System.in)
+    val n = sc.nextInt()
+    val arr = new Array[Int](n)
     for (arr_i <- 0 to n - 1) {
-      arr(arr_i) = sc.nextInt();
+      arr(arr_i) = sc.nextInt()
     }
     val out = arr.foldLeft((0, 0, 0)) { (l, r) ⇒
       if (r > 0)
@@ -61,8 +61,8 @@ object PlusMinus {
 
 object Staircase {
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
-    val n = sc.nextInt();
+    val sc = new java.util.Scanner(System.in)
+    val n = sc.nextInt()
     val out = 1 to n map { i ⇒
       " " * (n - i) + "#" * i
     } mkString "\n"
@@ -77,8 +77,8 @@ object TimeConversion {
     """.stripMargin)
 
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
-    var time = sc.next();
+    val sc = new java.util.Scanner(System.in)
+    var time = sc.next()
     val pmRegex = "([0-9][0-9]):([0-9][0-9]):([0-9][0-9])PM".r
     val amRegex = "([0-9][0-9]):([0-9][0-9]):([0-9][0-9])AM".r
     val out = time match {
@@ -99,12 +99,12 @@ object DiaogonalDifference {
     """.stripMargin)
 
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
-    var n = sc.nextInt();
-    var a = Array.ofDim[Int](n, n);
+    val sc = new java.util.Scanner(System.in)
+    var n = sc.nextInt()
+    var a = Array.ofDim[Int](n, n)
     for (a_i <- 0 to n - 1) {
       for (a_j <- 0 to n - 1) {
-        a(a_i)(a_j) = sc.nextInt();
+        a(a_i)(a_j) = sc.nextInt()
       }
     }
     val b = a.map(_.reverse)

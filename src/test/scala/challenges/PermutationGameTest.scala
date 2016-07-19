@@ -3,6 +3,8 @@ package challenges
 import algorithms.greedy.PermutationGame
 import org.scalatest.FunSuite
 
+import scala.language.implicitConversions
+
 /**
   * Created by yuJieShui on 2016/2/20.
   */

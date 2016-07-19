@@ -22,8 +22,8 @@ object SavePrincess2 {
   case class Point(yy: Int, xx: Int)
 
   def main(args: Array[String]) = {
-    val sc = new java.util.Scanner(System.in);
-    val m = sc.nextInt();
+    val sc = new java.util.Scanner(System.in)
+    val m = sc.nextInt()
     val toX = sc.nextInt()
     val toY = sc.nextInt()
     sc.nextLine()

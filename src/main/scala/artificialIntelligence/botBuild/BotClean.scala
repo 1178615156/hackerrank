@@ -11,7 +11,7 @@ object BotClean {
   import BotUtil._
 
   def main(args: Array[String]) = {
-    val sc = new java.util.Scanner(System.in);
+    val sc = new java.util.Scanner(System.in)
     val y = sc.nextInt()
     val x = sc.nextInt()
     sc.nextLine()
@@ -56,7 +56,7 @@ object BotCleanLarge {
   import BotUtil._
 
   def main(args: Array[String]) = {
-    val sc = new java.util.Scanner(System.in);
+    val sc = new java.util.Scanner(System.in)
     val y = sc.nextInt()
     val x = sc.nextInt()
     val h = sc.nextInt()
@@ -89,7 +89,7 @@ object BitCLeanPartiallyObservable {
   import BotUtil._
 
   def main(args: Array[String]) = {
-    val sc = new java.util.Scanner(System.in);
+    val sc = new java.util.Scanner(System.in)
     val x = sc.nextInt()
     val y = sc.nextInt()
     val h = 5 //sc.nextInt()

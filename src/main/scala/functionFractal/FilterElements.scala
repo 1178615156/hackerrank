@@ -18,7 +18,7 @@ object FilterElements extends App {
 
   case class Data(m: Int, k: Int, element: List[Int])
 
-  val sc    = new java.util.Scanner(System.in);
+  val sc    = new java.util.Scanner(System.in)
   val n     = sc.nextInt()
   val datas = (1 to n) map (_ ⇒ {
     val m = sc.nextInt()
@@ -47,7 +47,7 @@ object SuperDigit extends App {
     """.stripMargin
   )
 
-  val sc = new java.util.Scanner(System.in);
+  val sc = new java.util.Scanner(System.in)
   val in = sc.nextLine().split(" ")
   val n  = in.head
   val k  = in.tail.head.toInt

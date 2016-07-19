@@ -24,7 +24,7 @@ object AngryProfessor {
   case class Data(studentNum: Int, cancelation: Int, arrivalTime: List[Int])
 
   def main(args: Array[String]) {
-    val sc = new java.util.Scanner(System.in);
+    val sc = new java.util.Scanner(System.in)
     val n = sc.nextInt()
     val datas = 1 to n map (_ ⇒ {
       val student = sc.nextInt()

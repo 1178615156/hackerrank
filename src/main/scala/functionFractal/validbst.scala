@@ -2,6 +2,8 @@ package functionFractal
 
 import utils.SetInt
 
+import scala.language.implicitConversions
+
 /**
   * Created by yujieshui on 2016/3/14.
   */
