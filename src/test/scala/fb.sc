@@ -1,1 +1,1 @@
-val a +: b +: c +: other = List(1,2,3)
+Seq(1, 2, 3, 4).take(3).inits.toList
