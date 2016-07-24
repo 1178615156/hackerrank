@@ -25,6 +25,9 @@ object zz {
     println(result)
   }
 
+  final var a = 1
+
+  a +=1
   SetInt(
     """
       |
