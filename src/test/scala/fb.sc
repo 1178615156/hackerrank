@@ -1,1 +1,1 @@
-Seq(1, 2, 3, 4).take(3).inits.toList
+e8
