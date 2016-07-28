@@ -1,8 +1,6 @@
 package artificialIntelligence.botBuild
 
-/**
-  * Created by yuJieShui on 2016/1/1.
-  */
+
 
 object BotUtil {
 
