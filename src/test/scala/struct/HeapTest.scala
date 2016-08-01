@@ -1,4 +1,4 @@
-package utils
+package struct
 
 import org.scalatest.FunSuite
 
@@ -7,7 +7,7 @@ import org.scalatest.FunSuite
   */
 class HeapTest extends FunSuite {
 
-  import Heap._
+  import struct.Heap._
 
   val heap = apply(Seq(1, 2, 3))
 
@@ -33,5 +33,7 @@ class HeapTest extends FunSuite {
     println(_heap)
     assert(_heap.max === 6)
     assert(dropMax(_heap).max === 5)
+    assert(dropMax(dropMax(_heap)).max ===4 )
+    assert(dropMax(dropMax(dropMax(_heap))).max === 3)
   }
 }
