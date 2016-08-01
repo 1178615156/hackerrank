@@ -50,7 +50,9 @@ object BotEntity {
 
     def row(x: Int) = lines.map(_ (x))
 
-    def updateCell(new_cell: Cell[Value], x: Int, y: Int) = {
+    def updateCell(new_cell: Cell[Value]) = {
+      val x = new_cell.x
+      val y = new_cell.y
       val (line_head, line_tail) = lines.splitAt(y)
       val (cell_head, cell_tail) = line_tail.head.splitAt(x)
       val new_line = (cell_head :+ new_cell) ++ cell_tail.tail
