@@ -3,6 +3,9 @@ import utils.SetInt
 /**
   * Created by yuJieShui on 2016/3/20.
   */
+trait A
+trait B
+trait AB extends A with B
 object zz {
   def main(args: Array[String]) {
     val in = List(
