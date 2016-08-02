@@ -7,34 +7,52 @@ import scala.util.Random
 /**
   * Created by yuJieShui on 2016/8/1.
   */
+
+
 sealed trait Heap[+T] {
   def isEmpty: Boolean
 
   def nonEmpty = !isEmpty
 
   def max: T
+
+  def depth: Int
+
+  def values: Seq[T]
 }
 
 final case object EmptyHeap extends Heap[Nothing] {
-  override def isEmpty: Boolean = true
+  override val isEmpty: Boolean = true
 
   override def max: Nothing = Heap.no_max_value()
+
+  override val depth: Int = 0
+
+  override def values: Seq[Nothing] = Seq()
 }
 
 final case class LeafHeap[T](value: T) extends Heap[T] {
-  override def isEmpty: Boolean = false
+  override val isEmpty: Boolean = false
 
-  override def max: T = value
+  override val max: T = value
+
+  override val depth: Int = 1
+
+  override def values: Seq[T] = Seq(value)
 }
 
 final case class BinaryHeap[T](left: Heap[T], right: Heap[T])(implicit val order: Ordering[T]) extends Heap[T] {
-  def isEmpty: Boolean = left.isEmpty && right.isEmpty
+  override lazy val isEmpty: Boolean = left.isEmpty && right.isEmpty
 
-  override val max: T =
+  override lazy val max: T =
     if (left.isEmpty && right.isEmpty) Heap.no_max_value()
     else if (left.isEmpty) right.max
     else if (right.isEmpty) left.max
     else order.max(left.max, right.max)
+
+  override lazy val depth: Int = math.max(left.depth, right.depth) + 1
+
+  override def values: Seq[T] = left.values ++ right.values
 }
 
 final object Heap {
@@ -75,23 +93,29 @@ final object Heap {
     }
   }
 
-  def insert[T](value: T, heap: Heap[T], random: Random = new Random())
+  def insert[T](value: T, heap: Heap[T])
                (implicit
-                order: Ordering[T]): Heap[T] = {
-    heap match {
-      case EmptyHeap               => LeafHeap(value)
-      case x@LeafHeap(_)           => BinaryHeap(x, LeafHeap(value))
-      case BinaryHeap(left, right) =>
-        if (random.nextInt() % 2 == 0)
-          cons(insert(value, left, random), right)
-        else
-          cons(left, insert(value, right, random))
-    }
+                order: Ordering[T]): Heap[T] = heap match {
+    case EmptyHeap               => LeafHeap(value)
+    case x@LeafHeap(_)           => BinaryHeap(x, LeafHeap(value))
+    case BinaryHeap(left, right) =>
+      if (left.depth < right.depth)
+        cons(insert(value, left), right)
+      else
+        cons(left, insert(value, right))
   }
 
-  def merge[T](main: Heap[T], from: Heap[T])(implicit
-                                             order: Ordering[T]): Heap[T] =
-    cons(main, from)
+
+  def merge[T](main: Heap[T], from: Heap[T])
+              (implicit
+               order: Ordering[T]): Heap[T] =
+    if (from.isEmpty)
+      main
+    else
+      merge(insert(from.max, main), dropMax(from))
+
+  //  from.values.foldLeft(main)((heap,value)=> insert(value,heap))
+
 
 }
 
