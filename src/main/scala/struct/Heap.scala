@@ -42,15 +42,15 @@ final case class LeafHeap[T](value: T) extends Heap[T] {
 }
 
 final case class BinaryHeap[T](left: Heap[T], right: Heap[T])(implicit val order: Ordering[T]) extends Heap[T] {
-  override lazy val isEmpty: Boolean = left.isEmpty && right.isEmpty
+  override val isEmpty: Boolean = left.isEmpty && right.isEmpty
 
-  override lazy val max: T =
+  override val max: T =
     if (left.isEmpty && right.isEmpty) Heap.no_max_value()
     else if (left.isEmpty) right.max
     else if (right.isEmpty) left.max
     else order.max(left.max, right.max)
 
-  override lazy val depth: Int = math.max(left.depth, right.depth) + 1
+  override val depth: Int = math.max(left.depth, right.depth) + 1
 
   override def values: Seq[T] = left.values ++ right.values
 }
@@ -96,23 +96,48 @@ final object Heap {
   def insert[T](value: T, heap: Heap[T])
                (implicit
                 order: Ordering[T]): Heap[T] = heap match {
-    case EmptyHeap               => LeafHeap(value)
-    case x@LeafHeap(_)           => BinaryHeap(x, LeafHeap(value))
     case BinaryHeap(left, right) =>
       if (left.depth < right.depth)
         cons(insert(value, left), right)
       else
         cons(left, insert(value, right))
+    case x@LeafHeap(_)           =>
+      if ((x.value.hashCode() ^ value.hashCode()) % 2 == 0)
+        BinaryHeap(x, LeafHeap(value))
+      else
+        BinaryHeap(LeafHeap(value), x)
+
+    case EmptyHeap => LeafHeap(value)
   }
 
 
   def merge[T](main: Heap[T], from: Heap[T])
               (implicit
-               order: Ordering[T]): Heap[T] =
-    if (from.isEmpty)
-      main
-    else
-      merge(insert(from.max, main), dropMax(from))
+               order: Ordering[T]): Heap[T] ={
+    main match {
+      case EmptyHeap => from
+      case LeafHeap(x) => insert(x,from)
+      case BinaryHeap(left,right) =>
+        if (left.depth > right.depth && left.depth > from.depth)
+          BinaryHeap(left,BinaryHeap(right,from))
+        else if (right.depth > left.depth && right.depth > from.depth)
+          BinaryHeap(right,BinaryHeap(left,from))
+        else if (from.depth > left.depth && from.depth > right.depth)
+          BinaryHeap(from, BinaryHeap(left,right))
+        else
+          BinaryHeap(left,BinaryHeap(right,from))
+    }
+  }
+//    from match {
+//      case EmptyHeap               => main
+//      case LeafHeap(x)             => insert(x, main)
+//      case BinaryHeap(left, right) => merge(merge(main, left), right)
+//    }
+
+  //    if (from.isEmpty)
+  //      main
+  //    else
+  //      merge(insert(from.max, main), dropMax(from))
 
   //  from.values.foldLeft(main)((heap,value)=> insert(value,heap))
 
