@@ -13,8 +13,12 @@ object MaximizeSum {
       mkSubArray(l.tail, l.inits.toSeq ++ rt)
   }
 
-  def maximizeSum(l: List[Int], n: Int) = {
-    mkSubArray(l).map(_.sum % n).max
+  def remainder(n:Int,seq:Seq[Int]):Seq[Int] = ???
+
+  def groupInitBy(n:Int,seq:Seq[Int]):Seq[Seq[Int]] = ???
+
+  def solution(l: List[Int], n: Int) :Int = {
+    groupInitBy(n,remainder(n,l)).map(_.sum).max
   }
 
   def main(args: Array[String]) {
@@ -29,7 +33,7 @@ object MaximizeSum {
 
     val result =
     data.map{
-      case (l,n) => maximizeSum(l,n)
+      case (l,n) => solution(l,n)
     }
     println(
       result.mkString("\n")
