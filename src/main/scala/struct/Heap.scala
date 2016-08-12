@@ -18,7 +18,6 @@ sealed trait Heap[+T] {
 
   def depth: Int
 
-  def values: Seq[T]
 }
 
 final case object EmptyHeap extends Heap[Nothing] {
@@ -28,7 +27,6 @@ final case object EmptyHeap extends Heap[Nothing] {
 
   override val depth: Int = 0
 
-  override def values: Seq[Nothing] = Seq()
 }
 
 final case class LeafHeap[T](value: T) extends Heap[T] {
@@ -38,11 +36,10 @@ final case class LeafHeap[T](value: T) extends Heap[T] {
 
   override val depth: Int = 1
 
-  override def values: Seq[T] = Seq(value)
 }
 
 final case class BinaryHeap[T](left: Heap[T], right: Heap[T])(implicit val order: Ordering[T]) extends Heap[T] {
-  override val isEmpty: Boolean = left.isEmpty && right.isEmpty
+  override val isEmpty: Boolean = false
 
   override val max: T =
     if (left.isEmpty && right.isEmpty) Heap.no_max_value()
@@ -52,7 +49,6 @@ final case class BinaryHeap[T](left: Heap[T], right: Heap[T])(implicit val order
 
   override val depth: Int = math.max(left.depth, right.depth) + 1
 
-  override def values: Seq[T] = left.values ++ right.values
 }
 
 final object Heap {
