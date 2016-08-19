@@ -11,7 +11,7 @@ libraryDependencies ++= (
     "com.storm-enroute" %% "scalameter" % "0.7" ::
     Nil
 
-  ).map(_.withSources())
+  ).map(_.withSources().withJavadoc())
 
 testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
 
