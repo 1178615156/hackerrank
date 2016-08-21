@@ -9,38 +9,51 @@ import utils.SetInt
   */
 object MirkoAtTheConstructionSite {
 
-  case class Line(pitch: Int, slope: Int, index: Int)
+  final case class Line(pitch: Int, slope: Int, index: Int)
 
-  case class Point(x: Double, y: Double)
+  final case class Point(x: Double, y: Double)
 
   def intersectionPoint(a: Line, b: Line): Point = {
-    val x = (b.slope - a.slope) / (a.pitch - b.pitch)
+    val x = (a.pitch.toDouble - b.pitch) / (b.slope.toDouble - a.slope)
     Point(x, a.slope * x + a.pitch)
   }
 
-  def max(lines: Seq[Line]): Line = lines.maxBy(e => (e.pitch, e.index))
+  def buildDay(day: Int)(cs: Line) = cs.pitch + cs.slope * day
 
-  def find_max_line(lines: Seq[Line]) = {
-    val (max_line) = max(lines)
+  def startLine(lines: Seq[Line]): Line = lines.maxBy(line => (buildDay(0)(line), line.index))
 
-    val (x, next_lines) = lines.filter(_.slope > max_line.slope)
-      .groupBy(e => math.floor(intersectionPoint(e, max_line).x).toInt)
-      .minBy(_._1)
+  def cutout(lines: Seq[Line])(min: Line) = lines.filter(_.slope > min.slope)
 
+  def nextLine(lines: Seq[Line])(startLine: Line, startPoint: Point): (Point, Line) = {
+    val (point, line) = lines.filter(_.slope > startLine.slope)
+      .map { line => intersectionPoint(startLine, line) -> line }
+      .minBy { case (point, line) => point.x }
+
+    point -> line
   }
 
-  def solution2(lines: Seq[Line], query: Seq[Int]) = {
+  final case class LineRange(line: Line, start: Point, end: Point)
 
+  def impl(seq: Seq[Line], startLine: Line, startPoint: Point): Seq[LineRange] = {
+    val maybeLines = cutout(seq)(startLine)
+    if (maybeLines.isEmpty)
+      Seq(LineRange(startLine, startPoint, Point(Double.MaxValue, Double.MaxValue)))
+    else {
+      val (nextPoint, nextLine) = this.nextLine(maybeLines)(startLine, startPoint)
+      LineRange(startLine, startPoint, nextPoint) +: impl(maybeLines, nextLine, nextPoint)
+    }
   }
 
-  def buildDay(day: Int)(cs: Line) =
-    cs.copy(pitch = cs.pitch + cs.slope * day)
+  def solution2(seq: Seq[Line], query: Seq[Int]) = {
+    val lineRange = impl(seq, startLine(seq), Point(0, 0))
+    query.map(i => {
+      lineRange.filter(e => e.start.x <= i && i <= e.end.x).maxBy(_.line.index).line.index
+    })
+  }
 
-  def solution(seq: Seq[Line], query: Seq[Int]): Seq[Int] = {
+  final def solution(seq: Seq[Line], query: Seq[Int]): Seq[Int] = {
     query.map(day => {
-      val x = seq.indices zip seq.map(buildDay(day))
-      val (index, _) = x.maxBy(e => (e._2.pitch, e._1))
-      index + 1
+      seq.maxBy(line => buildDay(day)(line) -> line.index).index
     })
   }
 
@@ -53,9 +66,9 @@ object MirkoAtTheConstructionSite {
     val query = 1 to q map (_ => bi.readLine().toInt)
 
     val seq =
-      builds.indices zip builds zip ondDayBuild map { case ((i, f), b) => Line(f, b, i) }
+      builds.indices zip builds zip ondDayBuild map { case ((i, f), b) => Line(f, b, i + 1) }
 
-    val out = solution(seq, query)
+    val out = solution2(seq, query)
 
     println(
       out.mkString("\n")
