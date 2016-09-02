@@ -38,4 +38,13 @@ class BinaryTreeTest extends FunSuite {
         assert(right.end === 5)
     }
   }
+  test("update") {
+    val array = Seq(1, 2, 3, 4, 5)
+    val tree = apply(array, 0, array.size)
+    assert(tree.min === 1)
+    val t1 = update[Int](0, _ => 111)(tree)
+    assert(subArrTree(0, 1)(t1).size === 1)
+    assert(tree2value(subArrTree(0, 1)(t1).head).head === 111)
+    assert(t1.min === 2)
+  }
 }

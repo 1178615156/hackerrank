@@ -18,18 +18,12 @@ object MinimumMultiple {
 
   type Arr = Seq[Long]
 
-  def mkArr(seq: Seq[Long]): Arr = {
-    seq
-  }
+  def mkArr(seq: Seq[Long]): Arr = seq
 
-  def queryArr(query: Query)(arr: Arr): BigInt = {
-    minimumMultiple(arr.slice(query.start, query.end + 1))
-  }
+  def queryArr(query: Query)(arr: Arr): BigInt = minimumMultiple(arr.slice(query.start, query.end + 1))
 
+  def updateArr(update: Update)(arr: Arr): Arr = arr.updated(update.index, arr(update.index) * update.value)
 
-  def updateArr(update: Update)(arr: Arr): Arr = {
-    arr.updated(update.index, arr(update.index) * update.value)
-  }
 
   sealed trait Action
 
@@ -65,7 +59,7 @@ object MinimumMultiple {
     }
 
 
-    val out = solution(actions, mkArr(initArr))(Seq()) map (_ % (10e9 + 7).toInt) mkString "\n"
+    val out = solution(actions, mkArr(initArr))(Seq()) map (_ % (10e9 + 7).toLong) mkString "\n"
     println(out)
   }
 

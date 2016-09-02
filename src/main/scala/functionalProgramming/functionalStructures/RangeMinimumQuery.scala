@@ -7,6 +7,7 @@ import java.io.{BufferedReader, InputStreamReader}
   */
 object BinaryTree {
 
+  //[..)
   trait Tree[+T] {
     def start: Int
 
@@ -57,7 +58,7 @@ object BinaryTree {
     override def isEmpty: Boolean = false
   }
 
-  def apply(seq: Seq[Int], start: Int, end: Int): Tree[Int] = {
+  def apply[T: Ordering](seq: Seq[T], start: Int, end: Int): Tree[T] = {
     if (seq.isEmpty) Empty
     else if (seq.size == 1) Leaf(seq.head, start, end)
     else {
@@ -72,20 +73,19 @@ object BinaryTree {
     }
   }
 
-
-}
-
-object RangeMinimumQuery {
-
-  import BinaryTree._
-
-  def tree2value(tree: Tree[Int]): Seq[Int] = tree match {
-    case Empty => Seq()
-    case Leaf(value, _, _) => Seq(value)
-    case Binary(left, right, _, _) => tree2value(left) ++ tree2value(right)
+  def update[T: Ordering](index: Int, updateFunc: T => T)(tree: Tree[T]): Tree[T] = {
+    tree match {
+      case Empty                                 => ???
+      case Leaf(v, start, end) if start == index => Leaf(updateFunc(v), start, end)
+      case x@Binary(left, right, start, end)     =>
+        if (index < right.start)
+          x.copy(left = update(index, updateFunc)(left))
+        else
+          x.copy(right = update(index, updateFunc)(right))
+    }
   }
 
-  def rightTree(start: Int)(tree: Tree[Int]): Seq[Tree[Int]] = tree match {
+  def rightTree[T](start: Int)(tree: Tree[T]): Seq[Tree[T]] = tree match {
     case Binary(left, right, binaryStart, end) =>
       if (start < left.end)
         right +: rightTree(start)(left)
@@ -94,25 +94,44 @@ object RangeMinimumQuery {
 
     case x@Leaf(value, leafStart, end) =>
       if (leafStart >= start) Seq(x) else Seq()
-    case Empty => Seq()
+    case Empty                         => Seq()
   }
 
-  def leftTree(end: Int)(tree: Tree[Int]): Seq[Tree[Int]] = tree match {
+  def leftTree[T](end: Int)(tree: Tree[T]): Seq[Tree[T]] = tree match {
     case Binary(left, right, start, binaryEnd) =>
-      if (end  > left.end)
+      if (end > left.end)
         left +: leftTree(end)(right)
       else
         leftTree(end)(left)
-    case x@Leaf(value, start, leafEnd) =>
+    case x@Leaf(value, start, leafEnd)         =>
       if (leafEnd <= end) Seq(x) else Seq()
-    case Empty => Seq()
+    case Empty                                 => Seq()
   }
 
-  def solution(start: Int, end: Int)(tree: Tree[Int]): Int = {
+  def subArrTree[T](start: Int, end: Int)(tree: Tree[T]): Seq[Tree[T]] = {
     val r = rightTree(start)(tree)
     val l = leftTree(end)(tree)
-    val trees = r.filter(_.end < end) ++ l .filter(_.start >= start)
+    r.filter(_.end < end) ++ l.filter(_.start >= start)
+  }
+  def tree2value[T](tree: Tree[T]): Seq[T] = tree match {
+    case Empty                     => Seq()
+    case Leaf(value, _, _)         => Seq(value)
+    case Binary(left, right, _, _) => tree2value(left) ++ tree2value(right)
+  }
+}
 
+object RangeMinimumQuery {
+
+  import BinaryTree._
+
+
+
+
+  def solution(start: Int, end: Int)(tree: Tree[Int]): Int = {
+    //    val r = rightTree(start)(tree)
+    //    val l = leftTree(end)(tree)
+    //    r.filter(_.end < end) ++ l.filter(_.start >= start)
+    val trees = subArrTree(start, end)(tree)
     trees.map(_.min).min
   }
 
