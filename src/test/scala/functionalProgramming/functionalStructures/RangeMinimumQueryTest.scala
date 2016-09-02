@@ -11,7 +11,7 @@ import scala.io.Source
   */
 class RangeMinimumQueryTest extends FunSuite {
 
-  import BinaryTree._
+  import functionalProgramming.BinaryTree._
   import RangeMinimumQuery._
 
   val array = Seq(1, 2, 3, 4, 5)

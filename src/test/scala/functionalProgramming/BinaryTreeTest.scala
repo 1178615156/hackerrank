@@ -1,4 +1,4 @@
-package functionalProgramming.functionalStructures
+package functionalProgramming
 
 import org.scalatest.FunSuite
 
@@ -7,7 +7,7 @@ import org.scalatest.FunSuite
   */
 class BinaryTreeTest extends FunSuite {
 
-  import BinaryTree._
+  import functionalProgramming.BinaryTree._
 
   test("apply empty") {
     val array = Seq[Int]()
@@ -42,7 +42,7 @@ class BinaryTreeTest extends FunSuite {
     val array = Seq(1, 2, 3, 4, 5)
     val tree = apply(array, 0, array.size)
     assert(tree.min === 1)
-    val t1 = update[Int](0, _ => 111)(tree)
+    val t1 = updateTree[Int](0, _ => 111)(tree)
     assert(subArrTree(0, 1)(t1).size === 1)
     assert(tree2value(subArrTree(0, 1)(t1).head).head === 111)
     assert(t1.min === 2)
