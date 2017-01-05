@@ -15,7 +15,7 @@ class KunduAndBubbleWrapTest extends WordSpecLike {
         assert(solution(1, 2) === 3)
       }
       "2 2 " in {
-        assert(solution(2,2)  / 8.333 )
+        assert(solution(2,2)  / 8.333 ==0 )
       }
     }
 }

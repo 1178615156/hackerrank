@@ -14,8 +14,7 @@ libraryDependencies ++= (
     Nil
   )
   .map(excludeScalaLib)
-  .map(_.withSources().withJavadoc())
 
-testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
+//testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
 
 parallelExecution in Test := false
