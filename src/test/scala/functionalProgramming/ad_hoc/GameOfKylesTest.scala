@@ -126,5 +126,14 @@ class GameOfKylesTest extends WordSpecLike {
       enumAll(Seq(1, 4, 6, 8, 11, 17, 29))
     }
 
+    "10 to 20" in {
+      val l =
+      for {
+        a <- 10 to 20
+        b <- (a + 1) to 20
+      }yield ((a,b),enumAll(Seq(a,b )))
+
+      l.filter(_._2 ==false ).foreach(println )
+    }
   }
 }

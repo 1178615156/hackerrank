@@ -35,11 +35,9 @@ class GameOfKyles {
       case a :: Nil                => if(a == 0) false else true
       case a :: b :: Nil if a == b => false
       case e if result.contains(e) => result(e)
-
-
       case _ =>
 
-        val list = dropReplace.indices.map { index =>
+        val list: Seq[(Pin, Seq[Pin])] = dropReplace.indices.map { index =>
           (dropReplace(index), (dropReplace.take(index) ++ dropReplace.drop(index + 1)))
         }
         val allStatus =
