@@ -16,7 +16,13 @@ object TimeUtil{
       this.set(_ + (endTime - startTime))
       result
     }
+    override def toString: String = {
+      s"${time.toDouble/1000} s"
+    }
+
   }
+
+
 }
 object SetInt {
   def apply(s: String): Unit = {
