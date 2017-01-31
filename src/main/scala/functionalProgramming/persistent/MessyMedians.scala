@@ -37,7 +37,7 @@ class MessyMedians {
         case ((result, struct, cache), (index, element)) =>
 
           val new_struct =
-            if(element > 0) add(element)(struct) else cache(index + element)
+            if(element > 0) addByOrder(element)(struct) else cache(index + element)
 
           def new_cache = cache + (index -> new_struct)
 

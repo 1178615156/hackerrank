@@ -7,7 +7,7 @@ object BinaryTree {
 
   trait BinaryTree[T] {
 
-    def ordering: Ordering[T]
+    implicit def ordering: Ordering[T]
 
     def isEmpty: Boolean
 
@@ -32,14 +32,12 @@ object BinaryTree {
     override val height : Int     = math.max(left.height, right.height) + 1
   }
 
-  final case class Empty[T]() extends BinaryTree[T] {
+  final case class Empty[T]()(implicit override val ordering: Ordering[T]) extends BinaryTree[T] {
     override val isEmpty: Boolean = true
     override val size   : Int     = 0
     override val height : Int     = 0
 
     override def max: T = throw new NoSuchElementException("empty have not max")
-
-    override def ordering = ???
   }
 
 
@@ -67,11 +65,21 @@ object BinaryTree {
     else binaryTree
   }
 
-  def add[T: Ordering](i: T)(binaryTree: BinaryTree[T]): BinaryTree[T] = binaryTree match {
+  def addByOrder[T: Ordering](i: T)(binaryTree: BinaryTree[T]): BinaryTree[T] = binaryTree match {
     case Empty()                                                      => Leaf(i)
     case Leaf(value) if implicitly[Ordering[T]].lt(i, value)          => Node(Leaf(i), Leaf(value))
     case Leaf(value) if implicitly[Ordering[T]].gteq(i, value)        => Node(Leaf(value), Leaf(i))
-    case Node(left, right) if implicitly[Ordering[T]].lt(i, left.max) => reshape(Node(add(i)(left), right))
-    case Node(left, right)                                            => reshape(Node(left, add(i)(right)))
+    case Node(left, right) if implicitly[Ordering[T]].lt(i, left.max) => reshape(Node(addByOrder(i)(left), right))
+    case Node(left, right)                                            => reshape(Node(left, addByOrder(i)(right)))
+  }
+
+  def addByHeight[T](i: T)(binaryTree: BinaryTree[T]): BinaryTree[T] = {
+    import binaryTree.ordering
+    binaryTree match {
+      case Empty()                                          => Leaf(i)
+      case Leaf(value)                                      => Node(Leaf(value), Leaf(i))
+      case Node(left, right) if left.height <= right.height => reshape(Node(addByHeight(i)(left), right))
+      case Node(left, right)                                => reshape(Node(left, addByHeight(i)(right)))
+    }
   }
 }
