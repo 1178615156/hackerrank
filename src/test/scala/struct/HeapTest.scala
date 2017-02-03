@@ -16,6 +16,7 @@ class HeapTest extends FunSuite {
   test("apply") {
     println(heap)
     assert(heap.max === 3)
+    println(dropMax(heap))
     assert(dropMax(heap).max === 2)
     println(dropMax(heap))
     assert(dropMax(dropMax(heap)).max === 1)

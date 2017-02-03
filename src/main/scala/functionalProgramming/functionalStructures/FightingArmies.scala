@@ -10,21 +10,10 @@ import struct.Heap
 /**
   * Created by yujieshui on 2016/8/1.
   */
+
 object FightingArmies {
+  import Heap._
 
-  case class TimeRecd(var time: Long = 0) {
-    override def toString: String = time.toString
-
-    def apply() = time
-  }
-
-  def time[T](timeRecd: TimeRecd)(_rt: => T) = {
-    val st = System.nanoTime()
-    val rt = _rt
-    val et = System.nanoTime()
-    timeRecd.time += et - st
-    rt
-  }
 
   type Soldier = Int
   type CombatAbility = Int
@@ -32,13 +21,6 @@ object FightingArmies {
   type Army = Heap[Int]
   type Armies = Map[Int, Army]
 
-  var recruitTime    = TimeRecd()
-  var diedTime       = TimeRecd()
-  var updateArmyTime = TimeRecd()
-  var mergeTime      = TimeRecd()
-  var findArmyTime   = TimeRecd()
-  var dropTime       = TimeRecd()
-  var reverseTime    = TimeRecd()
 
   trait Even
 
@@ -52,35 +34,33 @@ object FightingArmies {
 
   def findStrongest(army: Army): CombatAbility = army.max
 
-  def strongestDied(army: Army): Army = time(diedTime) {
+  def strongestDied(army: Army): Army = {
     Heap.dropMax(army)
   }
 
-  def recruit(soldier: Soldier, army: Army): Army = time(recruitTime) {
+  def recruit(soldier: Soldier, army: Army): Army = {
     Heap.insert(soldier, army)
   }
 
-  def merge(a: Army, b: Army): Army = time(mergeTime) {
+  def merge(a: Army, b: Army): Army ={
     Heap.merge(a, b)
   }
 
-  def findArmyByIndex(int: Int, armies: Armies): Army = time(findArmyTime) {
+  def findArmyByIndex(int: Int, armies: Armies): Army =  {
     armies(int)
   }
 
-  def updateArmy(i: Int, new_army: Army, armies: Armies): Armies = time(updateArmyTime) {
+  def updateArmy(i: Int, new_army: Army, armies: Armies): Armies =  {
     armies updated(i, new_army)
   }
 
-  def dropArmy(i: Int, armies: Armies): Armies = time(dropTime) {
-    armies // - i
+  def dropArmy(i: Int, armies: Armies): Armies = {
+    armies //- i
   }
-
-  val zeroArmy = IntMap.empty[Army]
 
   def solution(armies: Armies, even: Seq[Even]): Seq[String] = {
 
-    val (final_armies, result) = even.foldLeft((armies, Seq[String]())) {
+    val (final_armies, results) = even.foldLeft((armies, Seq[String]())) {
 
       case ((acc_armies, result), FindStrongest(i)) =>
 
@@ -100,13 +80,13 @@ object FightingArmies {
 
         updateArmy(i, new_army, dropArmy(j, acc_armies)) -> result
     }
-    result.reverse
+    results.reverse
   }
 
   def read(readListInt: () => List[Int]) = {
 
     val n :: q :: Nil = readListInt()
-    val armies = IntMap((1 to n map (i => i -> Heap.empty[Int])): _*)
+    val armies = IntMap(1 to n map (i => i -> Heap.empty[Int]): _*)
     val evens = 1 to q map (_ => readListInt()) map {
       case 1 :: i :: Nil      => FindStrongest(i)
       case 2 :: i :: Nil      => StrongestDied(i)
@@ -117,8 +97,7 @@ object FightingArmies {
   }
 
   def main(args: Array[String]): Unit = {
-    val bi = new BufferedReader(new InputStreamReader(System.in))
-    def readListInt() = bi.readLine().split(" ").toList.map(_.toInt)
+    def readListInt() = io.StdIn.readLine().split(" ").toList.map(_.toInt)
 
     val (armies, evens) = read(() => readListInt())
 
