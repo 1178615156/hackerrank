@@ -8,8 +8,17 @@ import DicPath._
   */
 class DicPathTest extends WordSpecLike {
   "solution" must {
+    "case 1,2" in {
+      assert(solution(1, 2) == 4)
+      assert(solution(2, 1) == 6)
+    }
+    "case 2,2" in {
+      assert(solution(2, 2) == 9)
+
+    }
     "case 3 3" in {
       val result = solution(3, 3)
+      println(111)
       assert(result == 19)
     }
     "case 2 2" in {
@@ -21,11 +30,11 @@ class DicPathTest extends WordSpecLike {
       println(result)
     }
     "case 10,10" in {
-      val result = solution(10,10)
+      val result = solution(10, 10)
       println(result)
     }
     "case 18,18" in {
-      val result = solution(18,18)
+      val result = solution(18, 18)
       println(result)
     }
   }
