@@ -1,3 +1,8 @@
-import scala.runtime.Nothing$
+trait A {
+}
 
-def a : Nothing
+trait B {
+  self: A =>
+}
+
+val c: B  = new B with A
