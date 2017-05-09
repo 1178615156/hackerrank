@@ -1,1 +1,1 @@
-Set(1,2,3) &~ Set(1)
+val multipleByFive = 0 to(100, 5)
