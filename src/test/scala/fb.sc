@@ -1,8 +1,6 @@
-trait A {
-}
+val v = Vector(1,2,3,4)
 
-trait B {
-  self: A =>
-}
+v.updated(1,0)
 
-val c: B  = new B with A
+
+v
