@@ -17,28 +17,26 @@ class CutTheTreeTest extends WordSpec {
     4 -> 5,
     5 -> 6
   )
-  val tree   = mkTree(1, (edges ++ edges.map(_.swap)).groupBy(_._1).mapValues(_.map(_._2).toSet).toSeq.sortBy(_._1).map(_._2).toVector, (values), Seq())
+  val tree   = mkTree(1, (edges ++ edges.map(_.swap)).groupBy(_._1).mapValues(_.map(_._2)).toSeq.sortBy(_._1).map(_._2).toVector, (values), 0)
 
-  def removeEdge(tree: Tree[Int], start: Int, end: Int): Tree[Int] = tree match {
-    case node@Node(i, value, clients) =>
-      if(i == start || i == end)
-        node.copy(clients = clients.filterNot(e => e.i == start || e.i == end))
-      else
-        node.copy(clients = clients.map(removeEdge(_, start, end)))
 
-    case _ => tree
-  }
 
   "mu tree" in {
-    val n = 50000
+    val n = 100000
 
     def random: Int = math.abs(math.random * n).toInt
 
     val edges: Seq[(Int, Int)] = 2 to n map (n => n -> (random % n + 1))
     val values = (1 to n).toVector
-    val newEdges: Vector[Set[Int]] = (edges ++ edges.map(_.swap)).groupBy(_._1).mapValues(_.map(_._2).toSet).toSeq.sortBy(_._1).map(_._2).toVector
-    val tree = mkTree(n, newEdges, values,List())
+    val newEdges = (edges ++ edges.map(_.swap)).groupBy(_._1).mapValues(_.map(_._2)).toSeq.sortBy(_._1).map(_._2).toVector
+    val tree = mkTree(n, newEdges, values, 0)
     Thread.sleep(1234567)
+  }
+  "search" in {
+    val nedEdges = (edges ++ edges.map(_.swap)).groupBy(_._1).mapValues(_.map(_._2)).toSeq.sortBy(_._1).map(_._2).toVector
+//    println(search(1, nedEdges, Seq()))
+//    println(search(5, nedEdges, Seq(4)))
+//    println(search(5, nedEdges, Seq(2)))
   }
   "mu solution" in {
     val n = 50000
