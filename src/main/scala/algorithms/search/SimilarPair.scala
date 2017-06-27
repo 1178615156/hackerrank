@@ -9,9 +9,17 @@ object SimilarPair {
 
   case class Node(parent: Int, value: Int)
 
+  def root(n: Int, seq: Seq[Node]): Seq[Int] =
+    (1 to n) diff (seq.map(_.value))
+
+  def leaf(n: Int, seq: Seq[Node]): Seq[Int] =
+    (1 to n) diff (seq.map(_.parent))
+
   def toParentMap(seq: Seq[Node]): Map[Int, Int] =
     seq.map(e => e.value -> e.parent).toMap
 
+  def toClientMap(seq: Seq[Node])=
+    seq.groupBy(_.parent).mapValues(_.map(_.value))
   def parentLink2Map(work: Int,
                      parentMap: Map[Int, Int],
                      clientMap: Map[Int, Seq[Int]],
@@ -27,6 +35,7 @@ object SimilarPair {
       clientMap(work).foldLeft(new_result) {
         case (acc, element) => parentLink2Map(element, parentMap, clientMap, acc)
       }
+
   }
 
   import scala.collection.Searching.{Found, InsertionPoint, SearchResult}
@@ -35,8 +44,8 @@ object SimilarPair {
   def solution(n: Int, k: Int, seq: Seq[Node]): Seq[Int] = {
     val parentMap = toParentMap(seq)
     val parentLinkMap =
-      parentLink2Map(root(n, seq).head, parentMap, seq.groupBy(_.parent).mapValues(_.map(_.value)), Map(root(n, seq).map(e => e -> Seq(e)): _*))
-        .mapValues(_.tail.sorted)
+      parentLink2Map(root(n, seq).head, parentMap, toClientMap(seq), Map(root(n, seq).map(e => e -> Seq(e)): _*))
+      .mapValues(_.tail.sorted)
     1 to n map { e =>
       parentLinkMap(e).search(e - k) -> parentLinkMap(e).search(e + k) match {
         case (Found(start), Found(end))                   =>
@@ -55,7 +64,7 @@ object SimilarPair {
 
   def main(args: Array[String]): Unit = {
     val n :: k :: Nil = readListInt()
-    val nodes = 1 until n map (e => readListInt() match {
+    val nodes = 1 until  n map (e => readListInt() match {
       case a :: b :: Nil => Node(a, b)
     })
     val result = solution(n, k, nodes).sum
