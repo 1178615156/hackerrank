@@ -17,7 +17,6 @@ class SimilarPairTest extends WordSpec {
       Node(1, 5)
     )
     val result = SimilarPair.solution(n,k, data)
-    println(result.mkString("\n"))
-    assert(result.sum  === 4 )
+    assert(result=== 4 )
   }
 }
