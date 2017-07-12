@@ -35,7 +35,6 @@ object SpiesRevised {
       val b = seq.head
       seq.tail.exists(c => someLine(a, b, c)) || someLine(a, seq.tail)
     }
-    //    seq.exists(b => seq.filter(_ != b).exists(c => someLine(a, b, c)))
   }
 
 
