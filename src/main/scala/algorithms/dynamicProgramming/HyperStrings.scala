@@ -8,7 +8,11 @@ object HyperStrings {
   def superStringLen(seq: Seq[String]): Map[Int, Int] =
     seq.map(_.length).groupBy(e => e).mapValues(_.size)
 
-  def
+  def decomposition(base: Seq[Int], n: Int) = {
+
+
+  }
+
   def solution(n: Int, m: Int, set: Seq[String]) = {
 
   }
