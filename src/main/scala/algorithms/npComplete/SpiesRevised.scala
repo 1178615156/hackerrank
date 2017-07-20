@@ -58,7 +58,7 @@ object SpiesRevised {
   }
 
   def main(args: Array[String]): Unit = {
-    val n = 21
+    val n = 27
     val result = solution(empty, 1, n).get
     println(s"println($n)")
     println(
