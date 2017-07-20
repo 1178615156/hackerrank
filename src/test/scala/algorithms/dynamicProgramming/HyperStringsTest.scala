@@ -11,13 +11,20 @@ class HyperStringsTest extends WordSpec {
 
   "decomposition" must {
     "1" in {
-      println(decomposition( 30).mkString("\n"))
+      println(decomposition(4).map(_.sorted).toSet.mkString("\n"))
     }
 
   }
   "decompositionCache" must {
-    "1" in {
-      val cache: Map[Int, Set[ Seq[Int]]] = Map(0 -> Set(Seq()), 1 -> Set(Seq(1)))
+    val cache: Map[Int, Set[Seq[Int]]] = Map(0 -> Set(Seq()), 1 -> Set(Seq(1)))
+    "4" in {
+      println(decompositionCache(1, 4, cache).toSeq.mkString("\n"))
+    }
+    "10" in {
+      println(decompositionCache(1, 10, cache).mkString("\n"))
+
+    }
+    "100" in {
       println(decompositionCache(1, 100, cache).mkString("\n"))
     }
   }
