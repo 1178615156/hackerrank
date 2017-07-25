@@ -28,4 +28,16 @@ class HyperStringsTest extends WordSpec {
       println(decompositionCache(1, 100, cache).mkString("\n"))
     }
   }
+
+  "solution " must {
+    "case 0" in {
+      val result = solution(3, Seq("a", "ab"))
+      println(result)
+    }
+    "case 1" in {
+      val result = solution(3, Seq("a", "b", "c"))
+      println(result)
+
+    }
+  }
 }

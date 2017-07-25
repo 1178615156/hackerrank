@@ -28,7 +28,23 @@ object HyperStrings {
       1 to n map { i => decomposition(n - i).map(i +: _) } flatMap (e => e)
   }
 
-  def solution(n: Int, m: Int, set: Seq[String]) = {
+  def combination(n: Long, m: Long): Long =
+    (0L until m map (n - _)).product / (1L to m).product
 
+  def solution(m: Int, seq: Seq[String]) = {
+    val superStringLen = this.superStringLen(seq = seq)
+    val base_superString = superStringLen.keySet
+    val all_composition = this
+      .decompositionCache(1, m, Map(0 -> Set(Seq()), 1 -> Set(Seq(1)))).apply(m)
+
+    val legitimate_composition =
+      all_composition.filter(_.forall(i => base_superString.contains(i)))
+    legitimate_composition
+      .map { composition =>
+        composition -> composition.groupBy(e => e).mapValues(_.size)
+          .map { case (i, size) =>
+            combination(superStringLen(i) + size - 1, size)
+          }
+      }
   }
 }
