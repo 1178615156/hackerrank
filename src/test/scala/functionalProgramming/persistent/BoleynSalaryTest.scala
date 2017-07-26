@@ -37,8 +37,13 @@ class BoleynSalaryTest extends WordSpec {
     println(tii.map(e => e._1))
   }
 
-  "solution" in {
-    assert(solution(relation, (1 to salary.size zip salary).toMap, Seq(2 -> 1)) === Seq(7))
-    //    solution(relation,(1 to salary.size zip salary).toMap,Seq(1->5))
+  "solution" must {
+    "2->1" in {
+      assert(solution(relation, (1 to salary.size zip salary).toMap, Seq(2 -> 1)) === Seq(7))
+    }
+    "1->5" in {
+      assert(solution(relation, (1 to salary.size zip salary).toMap, Seq(1 -> 5)) === Seq(8))
+    }
+
   }
 }

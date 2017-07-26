@@ -50,7 +50,6 @@ trait BinaryTreeModelOpts {
   }
 
   final case class Node[T](left: BinaryTree[T], right: BinaryTree[T])(implicit override val ordering: Ordering[T]) extends BinaryTree[T] {
-    override lazy val size: Int = left.size + right.size
 
     override lazy val max: T =
       if(left.isEmpty && right.isEmpty) notMaxElement()
@@ -146,6 +145,24 @@ object Heap extends BinaryTreeOpts {
           case Seq(a)    => a
         }
       )
+  }
+
+  def dropMin[T: Ordering](heap: Heap[T]): Heap[T] = {
+    def impl[T: Ordering](heap: Heap[T]): Heap[T] =
+      heap match {
+        case Node(left, right) if left.isEmpty  => impl(right)
+        case Node(left, right) if right.isEmpty => impl(left)
+        case Node(left, right)                  =>
+          implicitly[Ordering[T]].compare(left.min, right.min) match {
+            case e if e > 0  => cons(left, impl(right))
+            case e if e == 0 => cons(impl(left), right)
+            case e if e < 0  => cons(impl(left), right)
+          }
+        case Empty()                            => notMinElement()
+        case Leaf(x)                            => Empty[T]()
+      }
+
+    reshape(impl(heap))
   }
 
   def dropMax[T: Ordering](heap: Heap[T]): Heap[T] = {

@@ -1,7 +1,7 @@
 package functionalProgramming.persistent
 
 import struct.Heap
-import struct.Heap.Heap
+import utils.SetInt
 
 /**
   * Created by yujieshui on 2017/7/22.
@@ -9,7 +9,7 @@ import struct.Heap.Heap
 object BoleynSalary {
 
   import scala.collection.immutable.TreeSet
-
+  import Heap.Heap
   case class Relation(client: Int, parent: Int)
 
   def tree2string[T](tree: Tree[T]): String = tree match {
@@ -23,8 +23,6 @@ object BoleynSalary {
   trait Tree[T] {
     implicit val ordered: Ordering[T]
 
-    def depth: Int
-
     def value: T
 
     def clientAt(i: Int): T
@@ -32,23 +30,25 @@ object BoleynSalary {
   }
 
   case class Node[T](value: T, client: Seq[Tree[T]])(implicit val ordered: Ordering[T]) extends Tree[T] {
-    val depth: Int = client.map(_.depth).max + 1
-    lazy val clientSeq: Heap[T] =
+    lazy val clientHeap: Heap[T] =
       Heap.merges(
         client.map {
-          case x@Leaf(_)    => x.clientHeap
-          case x@Node(_, _) => Heap.insert(x.value, x.clientSeq)
+          case x@Leaf(_)    => Heap(Seq(x.value))
+          case x@Node(_, _) => Heap.insert(x.value, x.clientHeap)
         }
       )
 
-
-    override def clientAt(i: Salary): T = ???
+    override def clientAt(i: Salary): T = {
+      def impl(i: Int, heap: Heap[T]): T = {
+//        heap.min
+        if(i == 0) heap.min
+        else impl(i - 1, Heap.dropMin(heap))
+      }
+      impl(i, clientHeap)
+    }
   }
 
   case class Leaf[T](value: T)(implicit val ordered: Ordering[T]) extends Tree[T] {
-    val depth               = 1
-    val clientHeap: Heap[T] = Heap(Seq(value))
-
     override def clientAt(i: Salary): T = ???
   }
 
@@ -107,4 +107,24 @@ object BoleynSalary {
     println(result.mkString("\n"))
   }
 
+
+  SetInt(
+    """8 7
+      |2 1
+      |3 2
+      |4 2
+      |7 4
+      |8 4
+      |5 1
+      |6 5
+      |70 40 60 80 10 20 30 50
+      |2 1
+      |-6 5
+      |-4 1
+      |-5 3
+      |2 1
+      |-5 4
+      |2 2
+      |
+    """.stripMargin)
 }
