@@ -1,13 +1,24 @@
 package functionalProgramming.persistent
 
-import utils.SetInt
+import struct.Heap
+import struct.Heap.Heap
 
 /**
   * Created by yujieshui on 2017/7/22.
   */
 object BoleynSalary {
 
+  import scala.collection.immutable.TreeSet
+
   case class Relation(client: Int, parent: Int)
+
+  def tree2string[T](tree: Tree[T]): String = tree match {
+    case Node(i, client) =>
+      val clientString = client.map(_.toString.split("\n").map(s => "  " + s).mkString("\n")).mkString("\n")
+      s"""+$i:
+         |${clientString}""".stripMargin
+    case Leaf(i)         => s"-$i"
+  }
 
   trait Tree[T] {
     implicit val ordered: Ordering[T]
@@ -16,31 +27,29 @@ object BoleynSalary {
 
     def value: T
 
-    def clientSeq: Seq[T]
+    def clientAt(i: Int): T
 
-    override def toString: String = this match {
-      case Node(i, client) =>
-        val clientString = client.map(_.toString.split("\n").map(s => "  " + s).mkString("\n")).mkString("\n")
-        s"""+$i:
-           |${clientString}""".stripMargin
-      case Leaf(i)         => s"-$i"
-    }
   }
 
   case class Node[T](value: T, client: Seq[Tree[T]])(implicit val ordered: Ordering[T]) extends Tree[T] {
     val depth: Int = client.map(_.depth).max + 1
-    lazy val clientSeq: Seq[T] = client.flatMap {
-      case x@Leaf(_)    => x.clientSeq
-      case x@Node(_, _) => x.value +: x.clientSeq
-    }.sorted
+    lazy val clientSeq: Heap[T] =
+      Heap.merges(
+        client.map {
+          case x@Leaf(_)    => x.clientHeap
+          case x@Node(_, _) => Heap.insert(x.value, x.clientSeq)
+        }
+      )
 
 
+    override def clientAt(i: Salary): T = ???
   }
 
   case class Leaf[T](value: T)(implicit val ordered: Ordering[T]) extends Tree[T] {
-    val depth             = 1
-    val clientSeq: Seq[T] = Seq(value)
+    val depth               = 1
+    val clientHeap: Heap[T] = Heap(Seq(value))
 
+    override def clientAt(i: Salary): T = ???
   }
 
   type Salary = Int
@@ -76,7 +85,7 @@ object BoleynSalary {
       this.treeIdIndex(tree).toMap
     query.foldLeft(Seq(0)) {
       case (acc, (id, by)) =>
-        val employ = treeIdIndex(id + acc.head).clientSeq.apply(by - 1)
+        val employ = treeIdIndex(id + acc.head).clientAt(by - 1)
         employ.id +: acc
     }.reverse.tail
   }

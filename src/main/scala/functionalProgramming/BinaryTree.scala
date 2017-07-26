@@ -3,6 +3,7 @@ package functionalProgramming
 /**
   * Created by yujieshui on 2016/8/19.
   */
+@deprecated("use struct.Tree")
 object BinaryTree {
 
   //[..)

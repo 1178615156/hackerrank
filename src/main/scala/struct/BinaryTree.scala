@@ -4,59 +4,81 @@ package struct
   * Created by yujieshui on 2017/1/16.
   */
 
-
-trait BinaryTreeOpts {
+trait BinaryTreeModelOpts {
 
   trait BinaryTree[T] {
 
     implicit def ordering: Ordering[T]
 
-    def isEmpty: Boolean
-    def notEmpty = !isEmpty
+    val isEmpty: Boolean = this match {
+      case Empty() => true
+      case _       => false
+    }
 
-    def size: Int
+    val size: Int = this match {
+      case Empty()           => 0
+      case Leaf(_)           => 1
+      case Node(left, right) => left.size + right.size
+    }
 
-    def height: Int
+    val height: Int = this match {
+      case Empty()           => 0
+      case Leaf(_)           => 1
+      case Node(left, right) => math.max(left.height, right.height) + 1
+    }
 
     def max: T
 
-    def depth = height
+    def min: T
+
+    def notEmpty: Boolean = !isEmpty
+
+    def depth: Int = height
   }
 
   final case class Leaf[T](value: T)(implicit override val ordering: Ordering[T]) extends BinaryTree[T] {
     override val isEmpty: Boolean = false
     override val size   : Int     = 1
     override val max    : T       = value
-    override val height : Int     = 1
+    override val min    : T       = value
+  }
+
+  final case class Empty[T]()(implicit override val ordering: Ordering[T]) extends BinaryTree[T] {
+    override def max: T = notMaxElement()
+
+    override def min: T = notMinElement()
   }
 
   final case class Node[T](left: BinaryTree[T], right: BinaryTree[T])(implicit override val ordering: Ordering[T]) extends BinaryTree[T] {
-    override      val isEmpty: Boolean = false
-    override lazy val size   : Int     = left.size + right.size
-    override lazy val height : Int     = math.max(left.height, right.height) + 1
-    override lazy val max    : T       =
+    override lazy val size: Int = left.size + right.size
+
+    override lazy val max: T =
       if(left.isEmpty && right.isEmpty) notMaxElement()
       else if(left.isEmpty) right.max
       else if(right.isEmpty) left.max
       else ordering.max(left.max, right.max)
+
+    override lazy val min: T =
+      if(left.isEmpty && right.isEmpty) notMinElement()
+      else if(left.isEmpty) right.min
+      else if(right.isEmpty) left.min
+      else ordering.min(left.min, right.min)
   }
 
-  final case class Empty[T]()(implicit override val ordering: Ordering[T]) extends BinaryTree[T] {
-    override val isEmpty: Boolean = true
-    override val size   : Int     = 0
-    override val height : Int     = 0
 
-    override def max: T = notMaxElement()
-  }
+  def notMaxElement() = throw new NoSuchElementException("empty have not max")
+
+  def notMinElement() = throw new NoSuchElementException("empty have not min")
+
+}
+
+trait BinaryTreeOpts extends BinaryTreeModelOpts {
 
   def node[T](left: BinaryTree[T], right: BinaryTree[T])(implicit ordering: Ordering[T]): BinaryTree[T] = {
     if(left.notEmpty && right.notEmpty)
-      Node(left,right)
-    else
-    if(left.isEmpty) right else left
+      Node(left, right)
+    else if(left.isEmpty) right else left
   }
-
-  def notMaxElement() = throw new NoSuchElementException("empty have not max")
 
   def empty[T: Ordering]: Empty[T] = Empty[T]()
 
@@ -92,6 +114,7 @@ trait BinaryTreeOpts {
           node(addByHeight(i)(left), right)
     }
   }
+
   def addByOrder[T](i: T)(binaryTree: BinaryTree[T]): BinaryTree[T] = {
     import binaryTree.ordering
     binaryTree match {
@@ -102,6 +125,7 @@ trait BinaryTreeOpts {
       case Node(left, right)                                            => reshape(node(left, addByOrder(i)(right)))
     }
   }
+
   def insert[T](value: T, binaryTree: BinaryTree[T]): BinaryTree[T]
 }
 
@@ -111,6 +135,18 @@ object Heap extends BinaryTreeOpts {
   def cons[T: Ordering](left: Heap[T], right: Heap[T]): Heap[T] = node(left, right)
 
   def merge[T: Ordering](main: Heap[T], from: Heap[T]): Heap[T] = reshape(cons(main, from))
+
+  def merges[T: Ordering](seq: Seq[Heap[T]]): Heap[T] = {
+    if(seq.isEmpty) empty[T]
+    else if(seq.tail.isEmpty) seq.head
+    else
+      merges(
+        seq.grouped(2).toSeq.map {
+          case Seq(a, b) => merge(a, b)
+          case Seq(a)    => a
+        }
+      )
+  }
 
   def dropMax[T: Ordering](heap: Heap[T]): Heap[T] = {
     def impl[T: Ordering](heap: Heap[T]): Heap[T] =
@@ -138,7 +174,6 @@ object Heap extends BinaryTreeOpts {
       cons(apply(l), apply(r))
 
   }
-
 
 
   override def insert[T](value: T, heap: Heap[T]): BinaryTree[T] = reshape(addByOrder(value)(heap))(heap.ordering)
