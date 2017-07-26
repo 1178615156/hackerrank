@@ -141,7 +141,7 @@ object Heap extends BinaryTreeOpts {
     else
       merges(
         seq.grouped(2).toSeq.map {
-          case Seq(a, b) => merge(a, b)
+          case Seq(a, b) => cons(a, b)
           case Seq(a)    => a
         }
       )

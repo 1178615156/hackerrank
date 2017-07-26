@@ -10,6 +10,7 @@ object BoleynSalary {
 
   import scala.collection.immutable.TreeSet
   import Heap.Heap
+
   case class Relation(client: Int, parent: Int)
 
   def tree2string[T](tree: Tree[T]): String = tree match {
@@ -23,32 +24,32 @@ object BoleynSalary {
   trait Tree[T] {
     implicit val ordered: Ordering[T]
 
-    def value: T
-
     def clientAt(i: Int): T
-
   }
 
   case class Node[T](value: T, client: Seq[Tree[T]])(implicit val ordered: Ordering[T]) extends Tree[T] {
     lazy val clientHeap: Heap[T] =
       Heap.merges(
         client.map {
-          case x@Leaf(_)    => Heap(Seq(x.value))
+          case x@Leaf(_)    => x.clientHeap
           case x@Node(_, _) => Heap.insert(x.value, x.clientHeap)
         }
       )
 
     override def clientAt(i: Salary): T = {
       def impl(i: Int, heap: Heap[T]): T = {
-//        heap.min
+        //        heap.min
         if(i == 0) heap.min
         else impl(i - 1, Heap.dropMin(heap))
       }
+
       impl(i, clientHeap)
     }
   }
 
   case class Leaf[T](value: T)(implicit val ordered: Ordering[T]) extends Tree[T] {
+    lazy val clientHeap: Heap[T] = Heap(Seq(value))
+
     override def clientAt(i: Salary): T = ???
   }
 
