@@ -101,18 +101,18 @@ trait BinaryTreeOpts extends BinaryTreeModelOpts {
     else binaryTree
   }
 
-  def addByHeight[T](i: T)(binaryTree: BinaryTree[T]): BinaryTree[T] = {
-    import binaryTree.ordering
-    binaryTree match {
-      case Empty()           => Leaf(i)
-      case Leaf(value)       => Node(Leaf(value), Leaf(i))
-      case Node(left, right) =>
-        if(left.height > right.height)
-          node(left, addByHeight(i)(right))
-        else
-          node(addByHeight(i)(left), right)
-    }
-  }
+//  def addByHeight[T](i: T)(binaryTree: BinaryTree[T]): BinaryTree[T] = {
+//    import binaryTree.ordering
+//    binaryTree match {
+//      case Empty()           => Leaf(i)
+//      case Leaf(value)       => Node(Leaf(value), Leaf(i))
+//      case Node(left, right) =>
+//        if(left.height > right.height)
+//          node(left, addByHeight(i)(right))
+//        else
+//          node(addByHeight(i)(left), right)
+//    }
+//  }
 
   def addByOrder[T](i: T)(binaryTree: BinaryTree[T]): BinaryTree[T] = {
     import binaryTree.ordering
@@ -122,6 +122,20 @@ trait BinaryTreeOpts extends BinaryTreeModelOpts {
       case Leaf(value) if implicitly[Ordering[T]].gteq(i, value)        => node(Leaf(value), Leaf(i))
       case Node(left, right) if implicitly[Ordering[T]].lt(i, left.max) => reshape(node(addByOrder(i)(left), right))
       case Node(left, right)                                            => reshape(node(left, addByOrder(i)(right)))
+    }
+  }
+
+  def get[T](i: Int, tree: BinaryTree[T]): T = {
+    tree match {
+      case Leaf(v) if i == 0 => v
+      case Node(left, right) =>
+        if(left.size >= i + 1)
+          get(i, left)
+        else {
+          get(i - left.size, right)
+        }
+      case Empty()           => ???
+      case _                 => ???
     }
   }
 
@@ -183,13 +197,12 @@ object Heap extends BinaryTreeOpts {
     reshape(impl(heap))
   }
 
-  def apply[T: Ordering](seq: Seq[T]): Heap[T] = seq match {
+  def apply[T: Ordering](seq: Seq[T]): Heap[T] = seq.sorted match {
     case Seq()         => Empty[T]()
     case head +: Seq() => Leaf(head)
     case other         =>
       val (l, r) = other.splitAt(other.size / 2)
       cons(apply(l), apply(r))
-
   }
 
 
