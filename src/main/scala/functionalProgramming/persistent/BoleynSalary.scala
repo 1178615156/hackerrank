@@ -8,9 +8,6 @@ import utils.SetInt
   */
 object BoleynSalary {
 
-  import scala.collection.immutable.TreeSet
-  import Heap.Heap
-
   case class Relation(client: Int, parent: Int)
 
   def tree2string[T](tree: Tree[T]): String = tree match {
@@ -28,28 +25,43 @@ object BoleynSalary {
   }
 
   case class Node[T](value: T, client: Seq[Tree[T]])(implicit val ordered: Ordering[T]) extends Tree[T] {
-    lazy val clientHeap: Heap[T] =
-      Heap.merges(
-        client.map {
-          case x@Leaf(_)    => x.clientHeap
-          case x@Node(_, _) => Heap.insert(x.value, x.clientHeap)
-        }
-      )
+
+    def margeSoredSeq2(l: Seq[T], r: Seq[T], rt: Seq[T]): Seq[T] = {
+      if(l.isEmpty) rt.reverse ++ r
+      else if(r.isEmpty) rt.reverse ++ l
+      else if(ordered.gt(l.head, r.head))
+        margeSoredSeq2(l, r.tail, r.head +: rt)
+      else
+        margeSoredSeq2(l.tail, r, l.head +: rt)
+    }
+
+    def margeSoredSeq(seq: Seq[Seq[T]]): Seq[T] = {
+      if(seq.isEmpty) Seq()
+      else if(seq.tail.isEmpty) seq.head
+      else {
+        margeSoredSeq(seq.grouped(2).toSeq.map(e =>
+          if(e.tail.isEmpty) e.head
+          else
+            margeSoredSeq2(e(0), e(1), Seq()))
+        )
+      }
+    }
+
+    val clientHeap: Vector[T] = {
+      val value: Seq[T] = client.collect {
+        case x@Leaf(_)    => x.value
+        case x@Node(_, _) => x.value
+      }
+      val clientValue = client.collect { case x@Node(_, _) => x.clientHeap }
+      margeSoredSeq((value.sorted +: clientValue).filter(_.nonEmpty)).toVector
+    }
 
     override def clientAt(i: Salary): T = {
-      def impl(i: Int, heap: Heap[T]): T = {
-        //        heap.min
-        if(i == 0) heap.min
-        else impl(i - 1, Heap.dropMin(heap))
-      }
-
-      impl(i, clientHeap)
+      clientHeap.apply(i)
     }
   }
 
   case class Leaf[T](value: T)(implicit val ordered: Ordering[T]) extends Tree[T] {
-    lazy val clientHeap: Heap[T] = Heap(Seq(value))
-
     override def clientAt(i: Salary): T = ???
   }
 
