@@ -7,9 +7,8 @@ import scala.collection.immutable.IndexedSeq
   * Created by yujieshui on 2017/1/6.
   */
 
-class GameOfKyles {
+object GameOfKyles {
   type Pin = Int
-
 
   def downPinAllPossible(int: Int): Seq[(Pin, Pin)] = {
     if(int == 0) Seq()
@@ -37,10 +36,10 @@ class GameOfKyles {
   def playGame(set: Set[Int]): Boolean = {
     val dropReplace = set
     if(set.isEmpty) false
-    else if(set.size == 1)  true
+    else if(set.size == 1) true
     else if(result.contains(set)) result(set)
     else {
-      val list = set.map { element => element -> dropReplace.filterNot(_ == element) }
+      val list = set.map { element => element -> (dropReplace - element) }.toSeq
       val allStatus = list.flatMap { case (pin, other) =>
         downPinAllPossible(pin).map {
           case (0, 0) => other
@@ -53,7 +52,7 @@ class GameOfKyles {
         }
       }
 
-      val playResult = allStatus.exists(e => !playGame(e))
+      val playResult = allStatus.sortBy(_.size).exists { e => !playGame(e)}
       result = result + (set -> playResult)
       playResult
     }
@@ -67,9 +66,7 @@ class GameOfKyles {
       .map(_.size)
   }
 
-}
 
-object GameOfKyles extends GameOfKyles {
   def readListInt(): List[Int] = io.StdIn.readLine().split(" ").toList.map(_.toInt)
 
   def main(args: Array[String]): Unit = {
