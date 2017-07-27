@@ -10,7 +10,8 @@ import scala.collection.immutable.IndexedSeq
 class GameOfKyles {
   type Pin = Int
 
-  def down(int: Int): Seq[(Pin, Pin)] = {
+
+  def downPinAllPossible(int: Int): Seq[(Pin, Pin)] = {
     if(int == 0) Seq()
     else if(int == 1) Seq((0, 0))
     else if(int == 2) Seq((0, 0), (0, 1))
@@ -23,40 +24,38 @@ class GameOfKyles {
     }
   }
 
-  type Result = Map[Seq[Int], Boolean]
+  type Result = Map[Set[Int], Boolean]
   var result: Result = Map()
 
-  def enumAll(seq: Seq[Int]): Boolean = {
-    val dropReplace = seq.groupBy(e => e).collect {
-      case (k, v) if v.size % 2 != 0 => k
-    }.toSeq.sorted
-    dropReplace.toList match {
-      case Nil                     => false
-      case a :: Nil                => if(a == 0) false else true
-      case a :: b :: Nil if a == b => false
-      case e if result.contains(e) => result(e)
-      case _ =>
 
-        val list: Seq[(Pin, Seq[Pin])] = dropReplace.indices.map { index =>
-          (dropReplace(index), (dropReplace.take(index) ++ dropReplace.drop(index + 1)))
+  def seq2set(seq: Seq[Int]): Set[Pin] = {
+    seq.groupBy(e => e).mapValues(_.size).collect {
+      case (k, size) if size % 2 != 0 => k
+    }.toSet
+  }
+
+  def playGame(set: Set[Int]): Boolean = {
+    val dropReplace = set
+    if(set.isEmpty) false
+    else if(set.size == 1)  true
+    else if(result.contains(set)) result(set)
+    else {
+      val list = set.map { element => element -> dropReplace.filterNot(_ == element) }
+      val allStatus = list.flatMap { case (pin, other) =>
+        downPinAllPossible(pin).map {
+          case (0, 0) => other
+          case (0, b) => if(other.contains(b)) other - b else other + b
+          case (a, 0) => if(other.contains(a)) other - a else other + a
+          case (a, b) =>
+            val aa = if(other.contains(a)) other - a else other + a
+            val bb = if(aa.contains(b)) aa - b else aa + b
+            bb
         }
-        val allStatus =
-          list.flatMap { case (pin, other) =>
-            down(pin).map { case (a, b) =>
-              Seq(a, b).filter(_ != 0) ++ other
+      }
 
-            }
-          }
-        val playResult =
-          allStatus.exists(e => {
-            !enumAll(e)
-          })
-        if(!result.contains(seq))
-          result = result ++ Seq(
-            (seq, playResult),
-            dropReplace -> playResult
-          )
-        playResult
+      val playResult = allStatus.exists(e => !playGame(e))
+      result = result + (set -> playResult)
+      playResult
     }
   }
 
@@ -81,7 +80,7 @@ object GameOfKyles extends GameOfKyles {
     }
     val data = inData.map(line2Seq)
 
-    val out = data.map(e => enumAll(e)).map {
+    val out = data.map(e => playGame(seq2set(e))).map {
       case true  => "WIN"
       case false => "LOSE"
     }.mkString("\n")

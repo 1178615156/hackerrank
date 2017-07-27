@@ -1,6 +1,5 @@
-import scala.collection.Searching._
-import scala.collection.immutable.TreeMap
-Seq(1.1,2.1,3.1).search(2.0
-)
+val l = List(1,2,3,4,5)
 
-TreeMap
+val ll = l.inits.toList.tail.reverse  zip l.tails.toList
+
+ll.map{case (l,r)⇒(r.head,l,r.tail)}
