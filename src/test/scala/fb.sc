@@ -1,5 +1,12 @@
-val l = List(1,2,3,4,5)
+def a(i: Int) = i + 1
+val l = List(1,2,3,1)
+l.map(a)
+l.map(a _)
+l.map(a(_))
 
-val ll = l.inits.toList.tail.reverse  zip l.tails.toList
 
-ll.map{case (l,r)⇒(r.head,l,r.tail)}
+val f1 = a(_)
+val f2 = a _
+
+
+l.span(_ <=2)
