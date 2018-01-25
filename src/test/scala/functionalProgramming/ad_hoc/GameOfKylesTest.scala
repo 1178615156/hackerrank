@@ -10,7 +10,7 @@ class GameOfKylesTest extends WordSpecLike {
 
   import GameOfKyles._
 
-  implicit val  f: (Seq[Pin]) => Set[ad_hoc.GameOfKyles.Pin] = seq2set _
+  implicit val f: (Seq[Pin]) => Set[ad_hoc.GameOfKyles.Pin] = seq2set _
 
   "enum" must {
     "1" in {
@@ -64,8 +64,8 @@ class GameOfKylesTest extends WordSpecLike {
       assert(playGame(seq))
     }
     "12,34,56" in {
-//      val seq = Seq(12, 34, 56)
-//      assert(playGame(seq))
+      //      val seq = Seq(12, 34, 56)
+      //      assert(playGame(seq))
     }
     "finish" in {
       println(result.mkString("\n"))
@@ -78,12 +78,10 @@ class GameOfKylesTest extends WordSpecLike {
         a <- 1 to 20
         b <- 1 to 20
       } yield
-        ((a, b), playGame(Seq(a, b)))
+        ((a, b), playGame(Seq(a, b)),Integer toBinaryString a | b , Integer.toBinaryString(a ^ b)  )
       //      println(x.filter(_._2 == false).map(_._1).map(_._1))
       //      println(x.filter(_._2 == false).map(_._1).map(_._2))
-      println(x.filter(_._2 == false).map(_._1)
-        .map { case (a, b) => (a, b, math.abs(a - b)) }
-        .mkString("\n"))
+      println(x.mkString("\n"))
 
     }
   }
