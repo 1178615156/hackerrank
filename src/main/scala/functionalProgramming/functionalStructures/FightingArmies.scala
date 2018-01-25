@@ -4,16 +4,21 @@ package functionalProgramming.functionalStructures
 import java.io.{BufferedReader, InputStreamReader}
 
 import scala.collection.BitSet
-import scala.collection.immutable.IntMap
-import struct.Heap
+import scala.collection.immutable.{LongMap, RedBlackTree}
+
 
 /**
   * Created by yujieshui on 2016/8/1.
   */
 
+import struct.Heap
+
 object FightingArmies {
+
+  import scala.collection.immutable.{IntMap, TreeMap, TreeSet}
   import Heap._
 
+  //  RedBlackTree
 
   type Soldier = Int
   type CombatAbility = Int
@@ -42,25 +47,37 @@ object FightingArmies {
     Heap.insert(soldier, army)
   }
 
-  def merge(a: Army, b: Army): Army ={
+  def merge(a: Army, b: Army): Army = {
     Heap.merge(a, b)
   }
 
-  def findArmyByIndex(int: Int, armies: Armies): Army =  {
+  def findArmyByIndex(int: Int, armies: Armies): Army = {
     armies(int)
   }
 
-  def updateArmy(i: Int, new_army: Army, armies: Armies): Armies =  {
-    armies updated(i, new_army)
+  def updateArmy(i: Int, new_army: Army, armies: Armies): Armies = {
+    armies.updated(i, new_army)
   }
 
   def dropArmy(i: Int, armies: Armies): Armies = {
     armies //- i
   }
 
-  def solution(armies: Armies, even: Seq[Even]): Seq[String] = {
+  def mkArmy(seq: Seq[Soldier]) = Heap.apply(seq)
 
-    val (final_armies, results) = even.foldLeft((armies, Seq[String]())) {
+  def solution(even: Seq[Even]): Seq[String] = {
+    def spanHeadInsert(evens: Seq[Even], result: Armies): (Seq[Even],Armies) = {
+      evens.head match {
+        case Recruit(i, c) => spanHeadInsert(evens.tail, result + (i -> Heap.single(c)) )
+        case _             => evens -> result
+      }
+    }
+
+    val (other, headInsert:Armies) = spanHeadInsert(even, IntMap.empty)
+    val initArmiesMap: Armies = headInsert
+    //    val (startInert, other) = even.span(_.isInstanceOf[Recruit])
+    //    val initArmiesMap: Armies = TreeMap(startInert.map(e => e.asInstanceOf[Recruit].i -> mkArmy(List(e.asInstanceOf[Recruit].c))): _*)
+    val (final_armies, results) = other.foldLeft((initArmiesMap, Seq[String]())) {
 
       case ((acc_armies, result), FindStrongest(i)) =>
 
@@ -86,22 +103,27 @@ object FightingArmies {
   def read(readListInt: () => List[Int]) = {
 
     val n :: q :: Nil = readListInt()
-    val armies = IntMap(1 to n map (i => i -> Heap.empty[Int]): _*)
     val evens = 1 to q map (_ => readListInt()) map {
       case 1 :: i :: Nil      => FindStrongest(i)
       case 2 :: i :: Nil      => StrongestDied(i)
       case 3 :: i :: c :: Nil => Recruit(i, c)
       case 4 :: i :: j :: Nil => Merge(i, j)
     }
-    (armies, evens)
+    evens
   }
 
   def main(args: Array[String]): Unit = {
+
     def readListInt() = io.StdIn.readLine().split(" ").toList.map(_.toInt)
 
-    val (armies, evens) = read(() => readListInt())
-
-    val out = solution(armies, evens)
+    val n :: q :: Nil = readListInt()
+    val evens = 1 to q map (_ => readListInt()) map {
+      case 1 :: i :: Nil      => FindStrongest(i)
+      case 2 :: i :: Nil      => StrongestDied(i)
+      case 3 :: i :: c :: Nil => Recruit(i, c)
+      case 4 :: i :: j :: Nil => Merge(i, j)
+    }
+    val out = solution(evens)
     println(
       out.mkString("\n")
     )

@@ -44,3 +44,7 @@ object SetInt {
     result
   }
 }
+object ReadSourceFile{
+  def apply(s: String) = this.getClass.getClassLoader.getResource(s).getFile
+
+}
