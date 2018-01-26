@@ -6,8 +6,6 @@ package functionalProgramming.functionalStructures
   */
 
 
-import scala.util.matching.Regex
-
 import struct.Heap
 
 object FightingArmies {
@@ -20,7 +18,8 @@ object FightingArmies {
   type Soldier = Int
   type CombatAbility = Int
   type ArmyIndex = Int
-  type Army = Heap[Int]
+  //  type Army = TreeMap[Soldier, Int]
+  type Army = Heap[Soldier]
   type Armies = Array[Army] // Map[Int, Army]
 
 
@@ -38,6 +37,10 @@ object FightingArmies {
 
   def strongestDied(army: Army): Army = {
     Heap.dropMax(army)
+    //    army.max match {
+    //      case (max, 1)   => army - max
+    //      case (max, num) => army.updated(max, num - 1)
+    //    }
   }
 
   def recruit(soldier: Soldier, army: Army): Army = {
@@ -45,10 +48,22 @@ object FightingArmies {
       single(soldier)
     else
       Heap.insert(soldier, army)
+    //    if(army == null)
+    //      single(soldier)
+    //    else
+    //      army.updated(soldier, army.get(soldier).map(_ + 1).getOrElse(1))
   }
 
   def merge(a: Army, b: Army): Army = {
-    Heap.merge(a, b)
+    if(a.size > b.size)
+      Heap.merge(a, b)
+    else
+      Heap.merge(b, a)
+
+    //    b.foldLeft(a) {
+    //      case (army, (solder, number)) =>
+    //        army.updated(solder, army.get(solder).map(_ + number).getOrElse(number))
+    //    }
   }
 
   def findArmyByIndex(int: Int, armies: Armies): Army = {
@@ -61,10 +76,14 @@ object FightingArmies {
   }
 
   def dropArmy(i: Int, armies: Armies): Armies = {
-    armies //- i
+    armies.update(i, null)
+    armies
   }
 
   def mkArmy(seq: Seq[Soldier]) = Heap.apply(seq)
+
+  //  def single(t: Soldier) = TreeMap(t -> 1)
+  def single(t: Soldier) = Heap.single(t)
 
   def solution(n: Int, even: Seq[Even]): Seq[Int] = {
 
@@ -84,25 +103,21 @@ object FightingArmies {
 
           case Recruit(i, c) =>
             val new_army = recruit(c, findArmyByIndex(i, armies))
-            val new_armies = updateArmy(i,new_army,armies)
+            val new_armies = updateArmy(i, new_army, armies)
             execCmd(cmds.tail, new_armies, result)
 
-          case Merge(i,j)=>
+          case Merge(i, j) =>
             val new_army = merge(findArmyByIndex(i, armies), findArmyByIndex(j, armies))
-            val new_armies = updateArmy(i,new_army,armies)
+            val new_armies = updateArmy(i, new_army, armies)
             execCmd(cmds.tail, new_armies, result)
 
         }
       }
     }
-    val armies: Armies = new Array(n + 1)
-    val (headRecruit, other) = even.span(_.isInstanceOf[Recruit])
-    headRecruit.foreach(x =>{
-      val e = x.asInstanceOf[Recruit]
-      armies.update(e.i, Heap.single(e.c))
-    })
 
-    execCmd(other,armies,Nil)
+    val armies: Armies = new Array(n + 1)
+    execCmd(even, armies, Nil)
+
 
   }
 
@@ -120,7 +135,7 @@ object FightingArmies {
 
   def main(args: Array[String]): Unit = {
 
-    def readListInt() = io.StdIn.readLine().split(" ").toList.map(_.toInt)
+    def readListInt() = scala.io.StdIn.readLine().split(" ").toList.map(_.toInt)
 
     val n :: q :: Nil = readListInt()
     val evens = 1 to q map (_ => readListInt() match {

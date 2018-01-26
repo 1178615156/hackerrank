@@ -1,2 +1,2 @@
-val l = 1 to 10
-l.span(_ < 5 )
+val l = List(4,3,2,1)
+l.sorted

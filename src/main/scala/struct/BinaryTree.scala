@@ -73,7 +73,8 @@ trait BinaryTreeOpts {
     import left.ordering
     if(left.notEmpty && right.notEmpty)
       Node(left, right)
-    else if(left.isEmpty) right else left
+    else
+    if(left.isEmpty) right else left
   }
 
   def empty[T: Ordering]: Empty[T] = Empty[T]()
@@ -146,7 +147,11 @@ object Heap extends BinaryTreeOpts {
   type Heap[T] = BinaryTree[T]
 
 
-  def merge[T](main: Heap[T], from: Heap[T]): Heap[T] = reshape(cons(main, from))
+  def merge[T](main: Heap[T], from: Heap[T]): Heap[T] = from match {
+    case Empty()           => main
+    case Leaf(x)           => insert(x, main)
+    case Node(left, right) => merge(merge(main, left), right)
+  }
 
   def merges[T: Ordering](seq: Seq[Heap[T]]): Heap[T] = {
     if(seq.isEmpty) empty[T]
@@ -178,20 +183,22 @@ object Heap extends BinaryTreeOpts {
     reshape(impl(heap))
   }
 
+  //scala.collection.immutable.Heap
+
   def dropMax[T](heap: Heap[T]): Heap[T] = {
     import heap.ordering
     def impl(heap: Heap[T]): Heap[T] =
       heap match {
-        case Node(left, right) if left.isEmpty  => impl(right)
-        case Node(left, right) if right.isEmpty => impl(left)
-        case Node(left, right)                  =>
+        case Node(left, right) if left.notEmpty && right.notEmpty =>
           heap.ordering.compare(left.max, right.max) match {
-            case e if e < 0  => cons(left, impl(right))
-            case e if e == 0 => cons(impl(left), right)
-            case e if e > 0  => cons(impl(left), right)
+            case e if e < 0 => reshape(cons(left, impl(right)))
+            case _          => reshape(cons(impl(left), right))
           }
-        case Empty()                            => notMaxElement()
-        case Leaf(x)                            => Empty[T]()
+        case Node(Empty(), right)                                 => impl(right)
+        case Node(left, Empty())                                  => impl(left)
+
+        case Leaf(x) => Empty[T]()
+        case Empty() => notMaxElement()
       }
 
     reshape(impl(heap))
@@ -208,7 +215,7 @@ object Heap extends BinaryTreeOpts {
   def single[T: Ordering](t: T): Heap[T] = Leaf(t)
 
 
-  def insert[T](value: T, heap: Heap[T]): BinaryTree[T] = reshape(addByHeight(value)(heap))
+  def insert[T](value: T, heap: Heap[T]): BinaryTree[T] = addByHeight(value)(heap)
 
 }
 
