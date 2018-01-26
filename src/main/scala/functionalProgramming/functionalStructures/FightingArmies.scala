@@ -1,30 +1,27 @@
 package functionalProgramming.functionalStructures
 
 
-import java.io.{BufferedReader, InputStreamReader}
-
-import scala.collection.BitSet
-import scala.collection.immutable.{LongMap, RedBlackTree}
-
-
 /**
   * Created by yujieshui on 2016/8/1.
   */
+
+
+import scala.util.matching.Regex
 
 import struct.Heap
 
 object FightingArmies {
 
   import scala.collection.immutable.{IntMap, TreeMap, TreeSet}
+  import scala.annotation.tailrec
   import Heap._
 
-  //  RedBlackTree
 
   type Soldier = Int
   type CombatAbility = Int
   type ArmyIndex = Int
   type Army = Heap[Int]
-  type Armies = Map[Int, Army]
+  type Armies = Array[Army] // Map[Int, Army]
 
 
   trait Even
@@ -44,7 +41,10 @@ object FightingArmies {
   }
 
   def recruit(soldier: Soldier, army: Army): Army = {
-    Heap.insert(soldier, army)
+    if(army == null)
+      single(soldier)
+    else
+      Heap.insert(soldier, army)
   }
 
   def merge(a: Army, b: Army): Army = {
@@ -56,7 +56,8 @@ object FightingArmies {
   }
 
   def updateArmy(i: Int, new_army: Army, armies: Armies): Armies = {
-    armies.updated(i, new_army)
+    armies.update(i, new_army)
+    armies
   }
 
   def dropArmy(i: Int, armies: Armies): Armies = {
@@ -65,39 +66,44 @@ object FightingArmies {
 
   def mkArmy(seq: Seq[Soldier]) = Heap.apply(seq)
 
-  def solution(even: Seq[Even]): Seq[String] = {
-    def spanHeadInsert(evens: Seq[Even], result: Armies): (Seq[Even],Armies) = {
-      evens.head match {
-        case Recruit(i, c) => spanHeadInsert(evens.tail, result + (i -> Heap.single(c)) )
-        case _             => evens -> result
+  def solution(n: Int, even: Seq[Even]): Seq[Int] = {
+
+    @tailrec
+    def execCmd(cmds: Seq[Even], armies: Armies, result: Seq[Int]): Seq[Int] = {
+      if(cmds.isEmpty) result.reverse
+      else {
+        cmds.head match {
+
+          case FindStrongest(i) =>
+            execCmd(cmds.tail, armies, findStrongest(findArmyByIndex(i, armies)) +: result)
+
+          case StrongestDied(i) =>
+            val new_army = strongestDied(findArmyByIndex(i, armies))
+            val new_armies = updateArmy(i, new_army, armies)
+            execCmd(cmds.tail, new_armies, result)
+
+          case Recruit(i, c) =>
+            val new_army = recruit(c, findArmyByIndex(i, armies))
+            val new_armies = updateArmy(i,new_army,armies)
+            execCmd(cmds.tail, new_armies, result)
+
+          case Merge(i,j)=>
+            val new_army = merge(findArmyByIndex(i, armies), findArmyByIndex(j, armies))
+            val new_armies = updateArmy(i,new_army,armies)
+            execCmd(cmds.tail, new_armies, result)
+
+        }
       }
     }
+    val armies: Armies = new Array(n + 1)
+    val (headRecruit, other) = even.span(_.isInstanceOf[Recruit])
+    headRecruit.foreach(x =>{
+      val e = x.asInstanceOf[Recruit]
+      armies.update(e.i, Heap.single(e.c))
+    })
 
-    val (other, headInsert:Armies) = spanHeadInsert(even, IntMap.empty)
-    val initArmiesMap: Armies = headInsert
-    //    val (startInert, other) = even.span(_.isInstanceOf[Recruit])
-    //    val initArmiesMap: Armies = TreeMap(startInert.map(e => e.asInstanceOf[Recruit].i -> mkArmy(List(e.asInstanceOf[Recruit].c))): _*)
-    val (final_armies, results) = other.foldLeft((initArmiesMap, Seq[String]())) {
+    execCmd(other,armies,Nil)
 
-      case ((acc_armies, result), FindStrongest(i)) =>
-
-        val resultHead = findStrongest(findArmyByIndex(i, acc_armies)).toString
-        acc_armies -> (resultHead +: result)
-
-      case ((acc_armies, result), StrongestDied(i)) =>
-        val new_army = strongestDied(findArmyByIndex(i, acc_armies))
-        updateArmy(i, new_army, acc_armies) -> result
-
-      case ((acc_armies, result), Recruit(i, c)) =>
-        val new_army = recruit(c, findArmyByIndex(i, acc_armies))
-        updateArmy(i, new_army, acc_armies) -> result
-
-      case ((acc_armies, result), Merge(i, j)) =>
-        val new_army = merge(findArmyByIndex(i, acc_armies), findArmyByIndex(j, acc_armies))
-
-        updateArmy(i, new_army, dropArmy(j, acc_armies)) -> result
-    }
-    results.reverse
   }
 
   def read(readListInt: () => List[Int]) = {
@@ -109,7 +115,7 @@ object FightingArmies {
       case 3 :: i :: c :: Nil => Recruit(i, c)
       case 4 :: i :: j :: Nil => Merge(i, j)
     }
-    evens
+    n -> evens
   }
 
   def main(args: Array[String]): Unit = {
@@ -117,13 +123,13 @@ object FightingArmies {
     def readListInt() = io.StdIn.readLine().split(" ").toList.map(_.toInt)
 
     val n :: q :: Nil = readListInt()
-    val evens = 1 to q map (_ => readListInt()) map {
+    val evens = 1 to q map (_ => readListInt() match {
       case 1 :: i :: Nil      => FindStrongest(i)
       case 2 :: i :: Nil      => StrongestDied(i)
       case 3 :: i :: c :: Nil => Recruit(i, c)
       case 4 :: i :: j :: Nil => Merge(i, j)
-    }
-    val out = solution(evens)
+    })
+    val out = solution(n, evens)
     println(
       out.mkString("\n")
     )

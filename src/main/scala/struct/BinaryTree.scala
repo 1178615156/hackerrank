@@ -91,6 +91,7 @@ trait BinaryTreeOpts {
         Node(ll, node(lr, right))
       case Node(left@Node(ll, lr@Node(lrl, lrr)), right) if left.height > right.height && ll.height < lr.height =>
         Node(node(ll, lrl), node(lrr, right))
+
       case Node(left, right@Node(rl, rr)) if left.height < right.height && rr.height >= rl.height               =>
         Node(node(left, rl), rr)
       case Node(left, right@Node(rl@Node(rll, rlr), rr)) if left.height < right.height && rr.height < rl.height =>
@@ -193,10 +194,10 @@ object Heap extends BinaryTreeOpts {
         case Leaf(x)                            => Empty[T]()
       }
 
-    (impl(heap))
+    reshape(impl(heap))
   }
 
-  def apply[T: Ordering](seq: Seq[T]): Heap[T] = seq.sorted match {
+  def apply[T: Ordering](seq: Seq[T]): Heap[T] = seq match {
     case Seq()         => Empty[T]()
     case head +: Seq() => Leaf(head)
     case other         =>
@@ -207,7 +208,7 @@ object Heap extends BinaryTreeOpts {
   def single[T: Ordering](t: T): Heap[T] = Leaf(t)
 
 
-  def insert[T](value: T, heap: Heap[T]): BinaryTree[T] = (addByOrder(value)(heap))
+  def insert[T](value: T, heap: Heap[T]): BinaryTree[T] = reshape(addByHeight(value)(heap))
 
 }
 
