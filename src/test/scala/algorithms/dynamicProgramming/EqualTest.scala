@@ -12,6 +12,13 @@ class EqualTest extends WordSpec with Matchers {
     val expect = 2
     result shouldBe expect
   }
+  "1 5 5" in {
+    (solution(string2listint("1 5 5"))) shouldBe 3
+  }
+  "2 5 5 5 5 5" in {
+    val result = solution(string2listint("2 5 5 5 5 5"))
+    (result) shouldBe 6
+  }
 
   "51" in {
     val data = string2listint("512 125 928 381 890 90 512 789 469 473 908 990 195 763 102 643 458 366 684 857 126 534 974 875 459 892 686 373 127 297 576 991 774 856 372 664 946 237 806 767 62 714 758 258 477 860 253 287 579 289 496")
