@@ -31,35 +31,7 @@ object Interleave {
     }
 }
 
-class QuillTest extends WordSpec {
 
-  import org.scalameter._
-
-  val l1 = (1 to 100000).toList
-  val l2 = (1 to 100000).toList
-  lazy val oldResult = Interleave(l1, l2)
-  lazy val newResult = Interleave.news(l1, l2)
-  "old" in {
-
-    val time = org.scalameter.config()
-      .withWarmer(Warmer.Zero)
-      .measure(
-        oldResult
-      )
-    println(time)
-  }
-  "new" in {
-    val time = org.scalameter.config()
-      .withWarmer(Warmer.Zero)
-      .measure(
-        newResult
-      )
-    println(time)
-  }
-  "final" in {
-    assert(oldResult === newResult)
-  }
-}
 
 
 
