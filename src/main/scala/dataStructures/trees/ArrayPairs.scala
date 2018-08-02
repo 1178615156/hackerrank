@@ -12,8 +12,8 @@ import struct.BinaryTree
 object ArrayPairs {
 
 //  util.TreeSet
-//
-//
+
+
 //  def canPair(num: Int, max: Int) = max / num
 //
 //  def solution(array: Seq[Int]) = {
